@@ -1,5 +1,5 @@
 {
-  "name": "plantuml",
+  "name": "umlmark",
   "displayName": "UMLMark",
   "description": "PlantUML support with smooth code visualization and navigation experience in Visual Studio Code .",
   "icon": "images/icon.png",
@@ -388,7 +388,8 @@
     "vscode:prepublish": "npm run buildsyntax && tsc -p ./",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "buildsyntax": "node ./scripts/build-syntax.js"
+    "buildsyntax": "node ./scripts/build-syntax.js",
+    "clean:devhost": "node -e \"const fs=require('fs');['out','.vscode/.dev-user-data','.vscode/.dev-extensions'].forEach(p=>fs.rmSync(p,{recursive:true,force:true}));\""
   },
   "devDependencies": {
     "@types/mocha": "^9.1.1",

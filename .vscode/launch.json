@@ -12,6 +12,8 @@
             "runtimeExecutable": "${execPath}",
             "args": [
                 "--extensionDevelopmentPath=${workspaceRoot}",
+                "--user-data-dir=${workspaceFolder}/.vscode/.dev-user-data",
+                "--extensions-dir=${workspaceFolder}/.vscode/.dev-extensions",
                 "--disable-extensions",
                 "c:\\workspace\\github\\uml\\Vision"
             ],
@@ -23,7 +25,11 @@
             "type": "extensionHost",
             "request": "launch",
             "runtimeExecutable": "${execPath}",
-            "args": ["--extensionDevelopmentPath=${workspaceRoot}"],
+            "args": [
+                "--extensionDevelopmentPath=${workspaceRoot}",
+                "--user-data-dir=${workspaceFolder}/.vscode/.dev-user-data",
+                "--extensions-dir=${workspaceFolder}/.vscode/.dev-extensions"
+            ],
             "outFiles": ["${workspaceFolder}/out/src/**/*.js"],
             "preLaunchTask": "npm: watch"
         },
@@ -35,6 +41,8 @@
             "args": [
                 "--extensionDevelopmentPath=${workspaceRoot}",
                 "--extensionTestsPath=${workspaceRoot}/out/test",
+                "--user-data-dir=${workspaceFolder}/.vscode/.dev-user-data",
+                "--extensions-dir=${workspaceFolder}/.vscode/.dev-extensions",
                 "--disable-extensions"
             ],
             "outFiles": ["${workspaceFolder}/out/test/**/*.js"],

@@ -28,11 +28,12 @@ import { Diagnoser } from './providers/diagnoser';
 export function activate(context: vscode.ExtensionContext) {
     contextManager.set(context);
     try {
-        const ext = vscode.extensions.getExtension("petercai.plantuml");
+        const ext = vscode.extensions.getExtension("petercai.umlmark");
         if (!ext) {
-            throw new Error("Extension 'petercai.plantuml' not found");
+            throw new Error("Extension 'petercai.umlmark' not found");
         }
         const version = ext.packageJSON.version;
+        outputPanel.appendLine(`[umlmark] activated id=${ext.id} version=${version}`);
         notifyOnNewVersion(context, version);
 
         context.subscriptions.push(
@@ -59,7 +60,8 @@ export function activate(context: vscode.ExtensionContext) {
         }
     } catch (error) {
         outputPanel.clear();
-        outputPanel.append(error);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        outputPanel.append(errorMessage);
     }
 }
 

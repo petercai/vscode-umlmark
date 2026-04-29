@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import * as nls from "vscode-nls";
-import { join } from "path";
 import { contextManager } from './context';
 
 export const languageid = "plantuml";
@@ -21,7 +20,7 @@ function getExtPath(): string {
         return contextManager.context.extensionPath;
     }
     // Fallback: try to get extension by ID
-    const ext = vscode.extensions.getExtension("petercai.plantuml");
+    const ext = vscode.extensions.getExtension("petercai.umlmark");
     if (ext?.extensionPath) {
         return ext.extensionPath;
     }
@@ -48,9 +47,10 @@ function initLocalize() {
     if (!_localize && extensionPath) {
         try {
             // loadMessageBundle expects path without extension, it will add .nls.json based on locale
-            _localize = nls.loadMessageBundle(join(extensionPath, "langs", "lang"));
+            const bundleBasePath = `${extensionPath.replace(/\\/g, "/")}/langs/lang`;
+            _localize = nls.loadMessageBundle(bundleBasePath);
         } catch (err) {
-            console.error("Failed to load message bundle:", err);
+            outputPanel.appendLine(`[umlmark] failed to load message bundle: ${String(err)}`);
             // Return a dummy localize function
             _localize = () => '';
         }
