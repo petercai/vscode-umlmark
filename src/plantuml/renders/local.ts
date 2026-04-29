@@ -56,11 +56,11 @@ class LocalRender implements IRender {
     private createTask(diagram: Diagram, taskType: string, savePath: string, format?: string): RenderTask {
         if (!config.java) {
             let pms = Promise.reject(localize(5, null));
-            return <RenderTask>{ promise: pms };
+            return <RenderTask>{ processes: [], promise: pms };
         }
         if (!fs.existsSync(config.jar(diagram.parentUri))) {
             let pms = Promise.reject(localize(6, null, extensionPath));
-            return <RenderTask>{ promise: pms };
+            return <RenderTask>{ processes: [], promise: pms };
         }
 
         let processes: child_process.ChildProcess[] = [];

@@ -56,5 +56,7 @@
 	"Bad \"plantuml.java\" config: {0}",
 	"コピー中...",
 	"クリップボードにコピー",
-	"コピーに失敗しました"
+	"コピーに失敗しました",
+	"Activate associated PlantUML code editor",
+	"Force refresh preview from associated PlantUML source"
 ]

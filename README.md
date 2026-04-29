@@ -2,7 +2,7 @@
 
 Rich PlantUML support for Visual Studio Code.
 
-[![Build Status](https://travis-ci.org/qjebbs/vscode-plantuml.svg?branch=master)](https://travis-ci.org/qjebbs/vscode-plantuml)
+**Enhanced Fork:** This version adds support for clickable file links in PlantUML diagram previews. Click on file references in your diagrams to jump directly to the source code!
 
 <!-- [Donate by Paypal](https://paypal.me/qjebbs "If you like this plugin, you can buy me a coffee. Feel free if you don't want to, since it's free!")
 |

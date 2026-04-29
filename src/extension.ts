@@ -28,7 +28,10 @@ import { Diagnoser } from './providers/diagnoser';
 export function activate(context: vscode.ExtensionContext) {
     contextManager.set(context);
     try {
-        const ext = vscode.extensions.getExtension("jebbs.plantuml");
+        const ext = vscode.extensions.getExtension("petercai.plantuml");
+        if (!ext) {
+            throw new Error("Extension 'petercai.plantuml' not found");
+        }
         const version = ext.packageJSON.version;
         notifyOnNewVersion(context, version);
 

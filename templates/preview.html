@@ -59,6 +59,12 @@
             <button class="btn" id="btnZoomIn">
                 <i class="material-icons">zoom_in</i>
             </button>
+            <button class="btn" id="btnActivatePuml" title="${localize(58, null)}">
+                <i class="material-icons">code</i>
+            </button>
+            <button class="btn" id="btnRefreshPreview" title="${localize(59, null)}">
+                <i class="material-icons">refresh</i>
+            </button>
             <button class="btn" id="btnCopy" 
                 data-label-copying="${localize(55, null)}" 
                 data-label-ok="${localize(56, null)}"
@@ -121,6 +127,10 @@
         <p id="status">${status}</p>
         <a id="sendStatus" href=""></a>
         <p id="settings">${settings}</p>
+        <p id="associatedDiagramPath">${associatedDiagramPath}</p>
+        <p id="associatedDiagramStartLine">${associatedDiagramStartLine}</p>
+        <p id="associatedDiagramEndLine">${associatedDiagramEndLine}</p>
+        <p id="associatedDiagramIndex">${associatedDiagramIndex}</p>
     </div>
 </body>
 

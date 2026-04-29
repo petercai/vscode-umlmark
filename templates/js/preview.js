@@ -10,6 +10,51 @@ let previewStatus = {
     pageStatus: {}
 }
 
+function parseIntOrZero(value) {
+    const parsed = parseInt(value || "0", 10);
+    return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function getAssociatedDiagramMetadata() {
+    return {
+        path: (document.getElementById("associatedDiagramPath")?.innerText || "").trim(),
+        startLine: parseIntOrZero(document.getElementById("associatedDiagramStartLine")?.innerText),
+        endLine: parseIntOrZero(document.getElementById("associatedDiagramEndLine")?.innerText),
+        index: parseIntOrZero(document.getElementById("associatedDiagramIndex")?.innerText),
+    };
+}
+
+function initializeActionBar() {
+    const btnActivatePuml = document.getElementById("btnActivatePuml");
+    const btnRefreshPreview = document.getElementById("btnRefreshPreview");
+
+    if (btnActivatePuml) {
+        btnActivatePuml.addEventListener("click", () => {
+            if (!vscode) return;
+            const metadata = getAssociatedDiagramMetadata();
+            vscode.postMessage({
+                action: "activateAssociatedPumlEditor",
+                path: metadata.path,
+                startLine: metadata.startLine,
+                endLine: metadata.endLine,
+                index: metadata.index,
+            });
+        });
+    }
+
+    if (btnRefreshPreview) {
+        btnRefreshPreview.addEventListener("click", () => {
+            if (!vscode) return;
+            const metadata = getAssociatedDiagramMetadata();
+            vscode.postMessage({
+                action: "refreshAssociatedPreview",
+                path: metadata.path,
+                index: metadata.index,
+            });
+        });
+    }
+}
+
 function throttle(fn, delay, atleast) {
     var timeout = null,
         startTime = new Date();
@@ -74,6 +119,7 @@ window.addEventListener("load", () => {
         document.getElementById("image-container").style.margin = "0";
         zoomer = new Zoom(settings);
         switcher.moveTo(previewStatus.page);
+        initializeActionBar();
         addCursorManager(settings);
         addHyperlinkManager(vscode);
         addSelectionBox(settings);

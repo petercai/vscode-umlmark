@@ -45,9 +45,11 @@ export function exportDiagram(diagram: Diagram, format: string, savePath: string
 }
 
 function combine(taskA: RenderTask, taskB: RenderTask): RenderTask {
+    const processesA = taskA.processes ?? [];
+    const processesB = taskB.processes ?? [];
     let processes: ChildProcess[] = [];
-    processes.push(...taskA.processes, ...taskB.processes);
-    let pms = new Promise((resolve, reject) => {
+    processes.push(...processesA, ...processesB);
+    let pms = new Promise<Buffer[]>((resolve, reject) => {
         Promise.all([taskA.promise, taskB.promise]).then(
             results => {
                 let buffs: Buffer[] = [];

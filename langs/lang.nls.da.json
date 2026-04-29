@@ -56,5 +56,7 @@
 	"Bad \"plantuml.java\" config: {0}",
 	"Kopierer...",
 	"Kopieret til udklipsholder",
-	"Kopiering mislykkedes"
+	"Kopiering mislykkedes",
+	"Activate associated PlantUML code editor",
+	"Force refresh preview from associated PlantUML source"
 ]

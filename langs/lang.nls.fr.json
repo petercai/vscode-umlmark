@@ -56,5 +56,7 @@
 	"Bad \"plantuml.java\" config: {0}",
 	"Copier...",
 	"Copié dans le presse-papier",
-	"Échec de la copie"
+	"Échec de la copie",
+	"Activate associated PlantUML code editor",
+	"Force refresh preview from associated PlantUML source"
 ]

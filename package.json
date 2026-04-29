@@ -1,21 +1,21 @@
 {
   "name": "plantuml",
-  "displayName": "PlantUML",
-  "description": "Rich PlantUML support for Visual Studio Code.",
+  "displayName": "UMLMark",
+  "description": "PlantUML support with smooth code visualization and navigation experience in Visual Studio Code .",
   "icon": "images/icon.png",
   "version": "2.18.1",
-  "publisher": "jebbs",
+  "publisher": "petercai",
   "engines": {
     "vscode": "^1.57.0"
   },
   "license": "SEE LICENSE IN LICENSE.txt",
   "bugs": {
-    "url": "https://github.com/qjebbs/vscode-plantuml/issues"
+    "url": "https://github.com/petercai/vscode-umlmark/issues"
   },
-  "homepage": "https://github.com/qjebbs/vscode-plantuml/blob/master/README.md",
+  "homepage": "https://github.com/petercai/vscode-umlmark",
   "repository": {
     "type": "git",
-    "url": "https://github.com/qjebbs/vscode-plantuml.git"
+    "url": "https://github.com/petercai/vscode-umlmark.git"
   },
   "categories": [
     "Programming Languages",
