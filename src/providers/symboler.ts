@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { diagramsOf } from '../plantuml/diagram/tools'
-import { languageid } from '../plantuml/common';
+import { diagramsOf } from '../umlmark/diagram/tools'
+import { languageid } from '../umlmark/common';
 
 export class Symbol extends vscode.Disposable implements vscode.DocumentSymbolProvider {
     private _disposables: vscode.Disposable[] = [];

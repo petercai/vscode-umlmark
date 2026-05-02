@@ -1,18 +1,44 @@
-The MIT License (MIT) 
+UML Tool License Agreement (Non-Commercial Use)
 
-Copyright (c) 2016 jebbs
+Copyright (c) 2013 petercai
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and 
-associated documentation files (the "Software"), to deal in the Software without restriction, including 
-without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the 
-following conditions:
+1. Grant of License
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions 
-of the Software.
+Permission is hereby granted to any individual or organization to use, copy,
+modify, and distribute this software for personal, educational, or other
+non-commercial purposes, free of charge.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
-TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
-THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
-CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
-DEALINGS IN THE SOFTWARE.
+2. Commercial Use Restriction
+
+Commercial use of this software is strictly prohibited without a valid
+commercial license obtained from the author.
+
+Commercial use includes, but is not limited to:
+
+- Use within a for-profit organization
+- Use in a production environment
+- Offering the software as a service (SaaS)
+- Integration into a paid product or service
+- Internal business usage
+
+3. Commercial License
+
+Organizations or individuals wishing to use this software for commercial
+purposes must obtain a separate commercial license.
+
+For commercial licensing inquiries, please contact:
+petercaica@hotmail.com
+
+4. Redistribution
+
+Redistribution of the software is permitted for non-commercial purposes only,
+provided that this license is included.
+
+5. No Warranty
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED.
+
+6. Termination
+
+Violation of this license will result in automatic termination of rights.

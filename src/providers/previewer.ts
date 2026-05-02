@@ -7,13 +7,13 @@ declare function setTimeout(handler: (...args: any[]) => void, timeout?: number)
 const fs = require('fs');
 const path = require('path');
 
-import { RenderTask } from '../plantuml/renders/interfaces'
-import { Diagram } from '../plantuml/diagram/diagram';
-import { diagramsOf, currentDiagram } from '../plantuml/diagram/tools';
-import { config } from '../plantuml/config';
-import { localize, extensionPath, outputPanel } from '../plantuml/common';
-import { parseError, calculateExportPath, addFileIndex, showMessagePanel, fileToBase64 } from '../plantuml/tools';
-import { exportToBuffer } from "../plantuml/exporter/exportToBuffer";
+import { RenderTask } from '../umlmark/renders/interfaces'
+import { Diagram } from '../umlmark/diagram/diagram';
+import { diagramsOf, currentDiagram } from '../umlmark/diagram/tools';
+import { config } from '../umlmark/config';
+import { localize, extensionPath, outputPanel } from '../umlmark/common';
+import { parseError, calculateExportPath, addFileIndex, showMessagePanel, fileToBase64 } from '../umlmark/tools';
+import { exportToBuffer } from "../umlmark/exporter/exportToBuffer";
 import { UI } from '../ui/ui';
 
 enum previewStatus {
@@ -74,7 +74,7 @@ class Previewer extends vscode.Disposable {
             error: "",
             status: this.previewPageStatus,
             // nonce: Math.random().toString(36).substr(2),
-            icon: "file:///" + path.join(extensionPath, "images", "icon.png"),
+            icon: "file:///" + path.join(extensionPath, "images", "icon-trans.png"),
             settings: JSON.stringify({
                 zoomUpperLimit: this.zoomUpperLimit,
                 showSpinner: this.status === previewStatus.processing,
@@ -249,7 +249,7 @@ class Previewer extends vscode.Disposable {
             new vscode.Range(diagram.start, diagram.end),
             vscode.TextEditorRevealType.InCenter,
         );
-        outputPanel.appendLine(`[INFO] Activated associated PlantUML editor: ${diagram.path}:${diagram.start.line + 1}-${diagram.end.line + 1}`);
+        outputPanel.appendLine(`[INFO] Activated associated UMLMark editor: ${diagram.path}:${diagram.start.line + 1}-${diagram.end.line + 1}`);
     }
     private async refreshAssociatedPreview(processingTip: boolean, silent: boolean = false) {
         let diagram = await this.resolveAssociatedDiagram();
@@ -260,7 +260,7 @@ class Previewer extends vscode.Disposable {
             return;
         }
         if (!silent) {
-            outputPanel.appendLine(`[INFO] Force refresh preview from associated PlantUML source: ${diagram.path}`);
+            outputPanel.appendLine(`[INFO] Force refresh preview from associated UMLMark source: ${diagram.path}`);
         }
         await this.killTasks();
         await this.updateByDiagram(diagram, processingTip);
@@ -309,7 +309,7 @@ class Previewer extends vscode.Disposable {
         let disposable: vscode.Disposable;
 
         //register command
-        disposable = vscode.commands.registerCommand('plantuml.preview', async () => {
+        disposable = vscode.commands.registerCommand('umlmark.preview', async () => {
             try {
                 var editor = vscode.window.activeTextEditor;
                 if (!editor) return;
@@ -329,19 +329,19 @@ class Previewer extends vscode.Disposable {
         this._disposables.push(disposable);
 
         this._uiPreview = new UI(
-            "plantuml.preview",
+            "umlmark.preview",
             localize(17, null),
             path.join(extensionPath, "templates"),
         );
         this._disposables.push(this._uiPreview);
 
         this._uiPreview.addEventListener("message", e => {
-            console.log('[PlantUML Extension] Received message:', e.message);
+            console.log('[UMLMark] Received message:', e.message);
             if (e.message.action == "openExternalLink") {
                 vscode.env.openExternal(e.message.href);
             } else if (e.message.action == "openFileLink") {
                 // Handle local file links (e.g., [[files/views/media.py:269]])
-                console.log('[PlantUML Extension] Opening file:', e.message.filePath, 'line:', e.message.lineNumber);
+                console.log('[UMLMark] Opening file:', e.message.filePath, 'line:', e.message.lineNumber);
                 this.openFileInEditor(e.message.filePath, e.message.lineNumber);
             } else if (e.message.action == "activateAssociatedPumlEditor") {
                 this.activateAssociatedPumlEditor().catch(error => showMessagePanel(error));
@@ -356,7 +356,7 @@ class Previewer extends vscode.Disposable {
     }
     
     private async openFileInEditor(filePath: string, lineNumber: number | null) {
-        console.log('[PlantUML Extension] openFileInEditor called with:', {filePath, lineNumber});
+        console.log('[UMLMark] openFileInEditor called with:', {filePath, lineNumber});
         try {
             // Clean up the file path - remove any vscode-webview:// protocol if present
             let cleanPath = filePath;
@@ -365,7 +365,7 @@ class Previewer extends vscode.Disposable {
             let webviewMatch = cleanPath.match(/^vscode-webview:\/\/[^\/]+\/(.+)$/);
             if (webviewMatch) {
                 cleanPath = webviewMatch[1];
-                console.log('[PlantUML Extension] Stripped vscode-webview protocol, clean path:', cleanPath);
+                console.log('[UMLMark] Stripped vscode-webview protocol, clean path:', cleanPath);
             }
             
             // Strip file:// protocol if present
@@ -374,11 +374,11 @@ class Previewer extends vscode.Disposable {
             // Strip any leading slashes that would make it absolute
             cleanPath = cleanPath.replace(/^\/+/, '');
             
-            console.log('[PlantUML Extension] Clean path:', cleanPath);
+            console.log('[UMLMark] Clean path:', cleanPath);
             
             // Resolve workspace-relative path to absolute path
             let workspaceFolder = vscode.workspace.workspaceFolders?.[0];
-            console.log('[PlantUML Extension] Workspace folder:', workspaceFolder?.uri.fsPath);
+            console.log('[UMLMark] Workspace folder:', workspaceFolder?.uri.fsPath);
             
             if (!workspaceFolder) {
                 vscode.window.showWarningMessage(`No workspace folder found to resolve: ${cleanPath}`);
@@ -386,16 +386,16 @@ class Previewer extends vscode.Disposable {
             }
             
             let absolutePath = path.join(workspaceFolder.uri.fsPath, cleanPath);
-            console.log('[PlantUML Extension] Absolute path:', absolutePath);
+            console.log('[UMLMark] Absolute path:', absolutePath);
             
             // Check if file exists
             if (!fs.existsSync(absolutePath)) {
-                console.log('[PlantUML Extension] File not found:', absolutePath);
+                console.log('[UMLMark] File not found:', absolutePath);
                 vscode.window.showWarningMessage(`File not found: ${cleanPath}`);
                 return;
             }
             
-            console.log('[PlantUML Extension] Opening document...');
+            console.log('[UMLMark] Opening document...');
             // Open the document
             let document = await vscode.workspace.openTextDocument(absolutePath);
             let editor = await vscode.window.showTextDocument(document, {
@@ -403,7 +403,7 @@ class Previewer extends vscode.Disposable {
                 viewColumn: vscode.ViewColumn.One
             });
             
-            console.log('[PlantUML Extension] Document opened successfully');
+            console.log('[UMLMark] Document opened successfully');
             
             // Navigate to line if specified
             if (lineNumber && lineNumber > 0) {
@@ -413,10 +413,10 @@ class Previewer extends vscode.Disposable {
                     new vscode.Range(position, position),
                     vscode.TextEditorRevealType.InCenter
                 );
-                console.log('[PlantUML Extension] Navigated to line:', lineNumber);
+                console.log('[UMLMark] Navigated to line:', lineNumber);
             }
         } catch (error) {
-            console.error('[PlantUML Extension] Error opening file:', error);
+            console.error('[UMLMark] Error opening file:', error);
             const message = error instanceof Error ? error.message : String(error);
             vscode.window.showErrorMessage(`Failed to open file: ${message}`);
         }

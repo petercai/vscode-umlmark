@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
-import { showMessagePanel, parseError } from '../plantuml/tools';
-import { formatRules } from '../plantuml/formatRules';
-import * as fmt from '../plantuml/formatter/formatter';
-import { languageid } from '../plantuml/common';
+import { showMessagePanel, parseError } from '../umlmark/tools';
+import { formatRules } from '../umlmark/formatRules';
+import * as fmt from '../umlmark/formatter/formatter';
+import { languageid } from '../umlmark/common';
 
 export class Formatter extends vscode.Disposable implements vscode.DocumentFormattingEditProvider {
     private _formatter: fmt.Formatter;
@@ -34,7 +34,7 @@ export class Formatter extends vscode.Disposable implements vscode.DocumentForma
     public provideDocumentFormattingEdits(document: vscode.TextDocument, options: vscode.FormattingOptions, token: vscode.CancellationToken): vscode.ProviderResult<vscode.TextEdit[]> {
         try {
             if (vscode.workspace.getConfiguration("editor", document.uri).get("formatOnSave")) {
-                console.log("PlantUML format disabled when 'editor.formatOnSave' is on, because it is not reliable enough.");
+                console.log("UMLMark format disabled when 'editor.formatOnSave' is on, because it is not reliable enough.");
                 return;
             }
             return this._formatter.formate(document, options, token);

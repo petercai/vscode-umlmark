@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
-import { LanguageCompletionItems } from '../plantuml/intellisense/languageCompletion';
-import { MacroCompletionItems } from '../plantuml/intellisense/macroCompletion';
-import { diagramAt } from '../plantuml/diagram/tools';
-import { VariableCompletionItems } from '../plantuml/intellisense/variableCompletion';
-import { languageid } from '../plantuml/common';
+import { LanguageCompletionItems } from '../umlmark/intellisense/languageCompletion';
+import { MacroCompletionItems } from '../umlmark/intellisense/macroCompletion';
+import { diagramAt } from '../umlmark/diagram/tools';
+import { VariableCompletionItems } from '../umlmark/intellisense/variableCompletion';
+import { languageid } from '../umlmark/common';
 
 export class Completion extends vscode.Disposable implements vscode.CompletionItemProvider {
     private _disposables: vscode.Disposable[] = [];

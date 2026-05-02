@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
-import { diagramsOf } from '../plantuml/diagram/tools';
+import { diagramsOf } from '../umlmark/diagram/tools';
 import { Uri } from 'vscode';
-import { localize } from '../plantuml/common';
-import { config } from '../plantuml/config';
+import { localize } from '../umlmark/common';
+import { config } from '../umlmark/config';
 
 export class Diagnoser extends vscode.Disposable {
     private _disposables: vscode.Disposable[] = [];

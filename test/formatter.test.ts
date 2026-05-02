@@ -10,8 +10,8 @@ import * as assert from 'assert';
 // as well as import your extension to test it
 import * as vscode from 'vscode';
 import * as myExtension from '../src/extension';
-import { MatchPositions, UnmatchedText } from '../src/plantuml/formatter/matchPositions';
-import { MultiRegExp2Match, MultiRegExp2 } from '../src/plantuml/formatter/multiRegExp2'
+import { MatchPositions, UnmatchedText } from '../src/umlmark/formatter/matchPositions';
+import { MultiRegExp2Match, MultiRegExp2 } from '../src/umlmark/formatter/multiRegExp2'
 
 // Defines a Mocha test suite to group tests of similar kind together
 suite("Formatter Tests", () => {

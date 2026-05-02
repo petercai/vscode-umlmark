@@ -1,5 +1,5 @@
 import { commands, Disposable } from 'vscode';
-import { showMessagePanel } from '../plantuml/tools';
+import { showMessagePanel } from '../umlmark/tools';
 
 export abstract class Command extends Disposable {
 

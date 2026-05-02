@@ -4,15 +4,15 @@
 import * as vscode from 'vscode';
 import * as nls from "vscode-nls";
 
-import { config } from './plantuml/config';
+import { config } from './umlmark/config';
 import { previewer } from './providers/previewer';
 import { Symbol } from "./providers/symboler";
 import { Completion } from "./providers/completion";
 import { Signature } from "./providers/signature";
 import { Formatter } from "./providers/formatter";
-import { notifyOnNewVersion } from "./plantuml/messages";
-import { outputPanel, bar } from "./plantuml/common";
-import { contextManager } from './plantuml/context';
+import { notifyOnNewVersion } from "./umlmark/messages";
+import { outputPanel, bar } from "./umlmark/common";
+import { contextManager } from './umlmark/context';
 
 import { CommandExportCurrent } from './commands/exportCurrent';
 import { CommandExportDocument } from './commands/exportDocument';

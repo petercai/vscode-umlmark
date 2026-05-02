@@ -1,11 +1,11 @@
 import { Command } from './common';
-import { exportDocument } from '../plantuml/exporter/exportDocument';
+import { exportDocument } from '../umlmark/exporter/exportDocument';
 
 export class CommandExportCurrent extends Command {
     async execute() {
         await exportDocument(false);
     }
     constructor() {
-        super("plantuml.exportCurrent");
+        super("umlmark.exportCurrent");
     }
 }

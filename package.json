@@ -1,9 +1,9 @@
 {
   "name": "umlmark",
   "displayName": "UMLMark",
-  "description": "PlantUML support with smooth code visualization and navigation experience in Visual Studio Code .",
-  "icon": "images/icon.png",
-  "version": "2.18.1",
+  "description": "PlantUML support with smooth code visualization and navigation experience in Visual Studio Code.",
+  "icon": "images/icon-trans.png",
+  "version": "1.0.5",
   "publisher": "petercai",
   "engines": {
     "vscode": "^1.57.0"
@@ -25,13 +25,13 @@
   ],
   "activationEvents": [
     "onLanguage:plantuml",
-    "onCommand:plantuml.exportCurrent",
-    "onCommand:plantuml.exportDocument",
-    "onCommand:plantuml.exportWorkspace",
-    "onCommand:plantuml.preview",
-    "onCommand:plantuml.URLCurrent",
-    "onCommand:plantuml.URLDocument",
-    "onCommand:plantuml.extractSource"
+    "onCommand:umlmark.exportCurrent",
+    "onCommand:umlmark.exportDocument",
+    "onCommand:umlmark.exportWorkspace",
+    "onCommand:umlmark.preview",
+    "onCommand:umlmark.URLCurrent",
+    "onCommand:umlmark.URLDocument",
+    "onCommand:umlmark.extractSource"
   ],
   "main": "./out/src/extension",
   "contributes": {
@@ -70,87 +70,87 @@
     ],
     "commands": [
       {
-        "command": "plantuml.exportCurrent",
-        "title": "%plantuml.exportCurrent.title%",
-        "category": "PlantUML"
+        "command": "umlmark.exportCurrent",
+        "title": "%umlmark.exportCurrent.title%",
+        "category": "UMLMark"
       },
       {
-        "command": "plantuml.exportDocument",
-        "title": "%plantuml.exportDocument.title%",
-        "category": "PlantUML"
+        "command": "umlmark.exportDocument",
+        "title": "%umlmark.exportDocument.title%",
+        "category": "UMLMark"
       },
       {
-        "command": "plantuml.exportWorkspace",
-        "title": "%plantuml.exportWorkspace.title%",
-        "category": "PlantUML"
+        "command": "umlmark.exportWorkspace",
+        "title": "%umlmark.exportWorkspace.title%",
+        "category": "UMLMark"
       },
       {
-        "command": "plantuml.preview",
-        "title": "%plantuml.preview.title%",
-        "category": "PlantUML",
+        "command": "umlmark.preview",
+        "title": "%umlmark.preview.title%",
+        "category": "UMLMark",
         "icon": "$(open-preview)"
       },
       {
-        "command": "plantuml.URLCurrent",
-        "title": "%plantuml.URLCurrent.title%",
-        "category": "PlantUML"
+        "command": "umlmark.URLCurrent",
+        "title": "%umlmark.URLCurrent.title%",
+        "category": "UMLMark"
       },
       {
-        "command": "plantuml.URLDocument",
-        "title": "%plantuml.URLDocument.title%",
-        "category": "PlantUML"
+        "command": "umlmark.URLDocument",
+        "title": "%umlmark.URLDocument.title%",
+        "category": "UMLMark"
       },
       {
-        "command": "plantuml.extractSource",
-        "title": "%plantuml.extractSource.title%",
-        "category": "PlantUML"
+        "command": "umlmark.extractSource",
+        "title": "%umlmark.extractSource.title%",
+        "category": "UMLMark"
       }
     ],
     "menus": {
       "editor/context": [
         {
           "when": "editorLangId == plantuml",
-          "command": "plantuml.preview",
-          "group": "PlantUML"
+          "command": "umlmark.preview",
+          "group": "UMLMark"
         },
         {
           "when": "editorLangId == plantuml",
-          "command": "plantuml.exportCurrent",
-          "group": "PlantUML"
+          "command": "umlmark.exportCurrent",
+          "group": "UMLMark"
         },
         {
           "when": "editorLangId == plantuml",
-          "command": "plantuml.exportDocument",
-          "group": "PlantUML"
+          "command": "umlmark.exportDocument",
+          "group": "UMLMark"
         },
         {
           "when": "editorLangId == plantuml",
-          "command": "plantuml.URLCurrent",
-          "group": "PlantUML"
+          "command": "umlmark.URLCurrent",
+          "group": "UMLMark"
         },
         {
           "when": "editorLangId == plantuml",
-          "command": "plantuml.URLDocument",
-          "group": "PlantUML"
+          "command": "umlmark.URLDocument",
+          "group": "UMLMark"
         }
       ],
       "explorer/context": [
         {
-          "command": "plantuml.exportWorkspace",
-          "group": "PlantUML"
+          "command": "umlmark.exportWorkspace",
+          "group": "UMLMark"
         }
       ],
       "editor/title": [
         {
           "when": "editorLangId == plantuml",
-          "command": "plantuml.preview",
+          "command": "umlmark.preview",
           "group": "navigation"
         }
       ]
     },
     "keybindings": [
       {
-        "command": "plantuml.preview",
+        "command": "umlmark.preview",
         "key": "Alt+d"
       }
     ],
@@ -194,9 +194,9 @@
     ],
     "configuration": {
       "type": "object",
-      "title": "%plantuml.configuration.configTitle%",
+      "title": "%umlmark.configuration.configTitle%",
       "properties": {
-        "plantuml.exportFormat": {
+        "umlmark.exportFormat": {
           "type": "string",
           "scope": "resource",
           "default": "",
@@ -215,87 +215,87 @@
             "latex",
             "latex:nopreamble"
           ],
-          "description": "%plantuml.configuration.exportFormat%"
+          "description": "%umlmark.configuration.exportFormat%"
         },
-        "plantuml.java": {
+        "umlmark.java": {
           "type": "string",
           "scope": "machine-overridable",
           "default": "java",
-          "description": "%plantuml.configuration.java%"
+          "description": "%umlmark.configuration.java%"
         },
-        "plantuml.jar": {
+        "umlmark.jar": {
           "type": "string",
           "scope": "machine-overridable",
           "default": "",
-          "description": "%plantuml.configuration.jar%"
+          "description": "%umlmark.configuration.jar%"
         },
-        "plantuml.diagramsRoot": {
+        "umlmark.diagramsRoot": {
           "type": "string",
           "scope": "resource",
           "default": "",
-          "description": "%plantuml.configuration.diagramsRoot%"
+          "description": "%umlmark.configuration.diagramsRoot%"
         },
-        "plantuml.fileExtensions": {
+        "umlmark.fileExtensions": {
           "type": "string",
           "scope": "resource",
           "default": ".wsd,.pu,.puml,.plantuml,.iuml",
-          "description": "%plantuml.configuration.fileExtensions%"
+          "description": "%umlmark.configuration.fileExtensions%"
         },
-        "plantuml.exportSubFolder": {
+        "umlmark.exportSubFolder": {
           "type": "boolean",
           "scope": "resource",
           "default": true,
-          "description": "%plantuml.configuration.exportSubFolder%"
+          "description": "%umlmark.configuration.exportSubFolder%"
         },
-        "plantuml.exportIncludeFolderHeirarchy": {
+        "umlmark.exportIncludeFolderHeirarchy": {
           "type": "boolean",
           "scope": "resource",
           "default": true,
-          "description": "%plantuml.configuration.exportIncludeFolderHeirarchy%"
+          "description": "%umlmark.configuration.exportIncludeFolderHeirarchy%"
         },
-        "plantuml.exportConcurrency": {
+        "umlmark.exportConcurrency": {
           "type": "number",
           "scope": "machine-overridable",
           "default": 3,
-          "description": "%plantuml.configuration.exportConcurrency%"
+          "description": "%umlmark.configuration.exportConcurrency%"
         },
-        "plantuml.exportOutDir": {
+        "umlmark.exportOutDir": {
           "type": "string",
           "scope": "resource",
           "default": "out",
-          "description": "%plantuml.configuration.exportOutDir%"
+          "description": "%umlmark.configuration.exportOutDir%"
         },
-        "plantuml.exportMapFile": {
+        "umlmark.exportMapFile": {
           "type": "boolean",
           "scope": "resource",
           "default": false,
-          "description": "%plantuml.configuration.exportMapFile%"
+          "description": "%umlmark.configuration.exportMapFile%"
         },
-        "plantuml.previewAutoUpdate": {
+        "umlmark.previewAutoUpdate": {
           "type": "boolean",
           "scope": "application",
           "default": true,
-          "description": "%plantuml.configuration.previewAutoUpdate%"
+          "description": "%umlmark.configuration.previewAutoUpdate%"
         },
-        "plantuml.previewSnapIndicators": {
+        "umlmark.previewSnapIndicators": {
           "type": "boolean",
           "scope": "application",
           "default": false,
-          "description": "%plantuml.configuration.previewSnapIndicators%"
+          "description": "%umlmark.configuration.previewSnapIndicators%"
         },
-        "plantuml.previewSwapMouseButtons": {
+        "umlmark.previewSwapMouseButtons": {
           "type": "boolean",
           "scope": "application",
           "default": false,
-          "description": "%plantuml.configuration.previewSwapMouseButtons%"
+          "description": "%umlmark.configuration.previewSwapMouseButtons%"
         },
-        "plantuml.server": {
+        "umlmark.server": {
           "type": "string",
           "scope": "machine-overridable",
           "default": "",
-          "description": "%plantuml.configuration.server%"
+          "description": "%umlmark.configuration.server%"
         },
-        "plantuml.urlFormat": {
+        "umlmark.urlFormat": {
           "type": "string",
           "scope": "application",
           "default": "",
@@ -305,9 +305,9 @@
             "svg",
             "txt"
           ],
-          "description": "%plantuml.configuration.urlFormat%"
+          "description": "%umlmark.configuration.urlFormat%"
         },
-        "plantuml.urlResult": {
+        "umlmark.urlResult": {
           "type": "string",
           "scope": "application",
           "default": "MarkDown",
@@ -315,9 +315,9 @@
             "MarkDown",
             "SimpleURL"
           ],
-          "description": "%plantuml.configuration.urlResult%"
+          "description": "%umlmark.configuration.urlResult%"
         },
-        "plantuml.render": {
+        "umlmark.render": {
           "type": "string",
           "scope": "machine-overridable",
           "default": "",
@@ -325,31 +325,31 @@
             "Local",
             "PlantUMLServer"
           ],
-          "description": "%plantuml.configuration.render%"
+          "description": "%umlmark.configuration.render%"
         },
-        "plantuml.includepaths": {
+        "umlmark.includepaths": {
           "type": "array",
           "scope": "resource",
           "default": [],
-          "description": "%plantuml.configuration.includepaths%"
+          "description": "%umlmark.configuration.includepaths%"
         },
-        "plantuml.lintDiagramNoName": {
+        "umlmark.lintDiagramNoName": {
           "type": "boolean",
           "scope": "resource",
           "default": true,
-          "description": "%plantuml.configuration.lintDiagramNoName%"
+          "description": "%umlmark.configuration.lintDiagramNoName%"
         },
-        "plantuml.commandArgs": {
+        "umlmark.commandArgs": {
           "type": "array",
           "scope": "resource",
           "default": [],
-          "description": "%plantuml.configuration.commandArgs%"
+          "description": "%umlmark.configuration.commandArgs%"
         },
-        "plantuml.jarArgs": {
+        "umlmark.jarArgs": {
           "type": "array",
           "scope": "resource",
           "default": [],
-          "description": "%plantuml.configuration.jarArgs%"
+          "description": "%umlmark.configuration.jarArgs%"
         }
       }
     },
@@ -370,14 +370,14 @@
     },
     "untrustedWorkspaces": {
       "supported": "limited",
-      "description": "%plantuml.untrusted.description%",
+      "description": "%umlmark.untrusted.description%",
       "restrictedConfigurations": [
-        "plantuml.java",
-        "plantuml.jar",
-        "plantuml.includepaths",
-        "plantuml.server",
-        "plantuml.commandArgs",
-        "plantuml.jarArgs"
+        "umlmark.java",
+        "umlmark.jar",
+        "umlmark.includepaths",
+        "umlmark.server",
+        "umlmark.commandArgs",
+        "umlmark.jarArgs"
       ]
     }
   },
@@ -385,8 +385,11 @@
     "workspace"
   ],
   "scripts": {
-    "vscode:prepublish": "npm run buildsyntax && tsc -p ./",
+    "check:package-version-bump": "node ./scripts/check-package-version-bump.js",
+    "vscode:prepublish": "npm run check:package-version-bump && npm run buildsyntax && tsc -p ./",
     "compile": "tsc -p ./",
+    "test": "npm run test:markdown-render",
+    "test:markdown-render": "npm run compile && node ./out/test/markdown-render.node.test.js",
     "watch": "tsc -watch -p ./",
     "buildsyntax": "node ./scripts/build-syntax.js",
     "clean:devhost": "node -e \"const fs=require('fs');['out','.vscode/.dev-user-data','.vscode/.dev-extensions'].forEach(p=>fs.rmSync(p,{recursive:true,force:true}));\""

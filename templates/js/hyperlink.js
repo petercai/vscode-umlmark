@@ -4,12 +4,12 @@ function addHyperlinkManager(vscode) {
         if (e.button == 0 && e.target.target == "_blank") {
             let href = e.target.href;
             
-            console.log('[PlantUML] Link clicked:', href);
+            console.log('[UMLMark] Link clicked:', href);
             
             // Check if this is an external link (http, https, ftp)
             let isExternalLink = href.match(/^https?:\/\//i) || href.match(/^ftp:\/\//i);
             
-            console.log('[PlantUML] Is external link:', isExternalLink);
+            console.log('[UMLMark] Is external link:', isExternalLink);
             
             if (!isExternalLink) {
                 // Extract workspace-relative file path from various URL formats
@@ -27,7 +27,7 @@ function addHyperlinkManager(vscode) {
                 if (webviewMatch) {
                     filePath = webviewMatch[1];
                     lineNumber = webviewMatch[2] ? parseInt(webviewMatch[2]) : null;
-                    console.log('[PlantUML] Extracted from vscode-webview URL:', {filePath, lineNumber});
+                    console.log('[UMLMark] Extracted from vscode-webview URL:', {filePath, lineNumber});
                 } else {
                     // Try file:// protocol
                     let cleanHref = href.replace(/^file:\/\//, '');
@@ -43,12 +43,12 @@ function addHyperlinkManager(vscode) {
                     if (pathMatch) {
                         filePath = pathMatch[1];
                         lineNumber = pathMatch[2] ? parseInt(pathMatch[2]) : null;
-                        console.log('[PlantUML] Extracted from file path:', {filePath, lineNumber});
+                        console.log('[UMLMark] Extracted from file path:', {filePath, lineNumber});
                     }
                 }
                 
                 if (filePath) {
-                    console.log('[PlantUML] Sending openFileLink:', {filePath, lineNumber});
+                    console.log('[UMLMark] Sending openFileLink:', {filePath, lineNumber});
                     
                     // Send message to extension
                     vscode.postMessage({
@@ -63,7 +63,7 @@ function addHyperlinkManager(vscode) {
             }
             
             // Handle external links (http://, https://, ftp://)
-            console.log('[PlantUML] Sending openExternalLink:', href);
+            console.log('[UMLMark] Sending openExternalLink:', href);
             vscode.postMessage({
                 "action": "openExternalLink",
                 "href": href

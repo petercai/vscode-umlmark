@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { showMessagePanel } from '../plantuml/tools';
+import { showMessagePanel } from '../umlmark/tools';
 import { UIEventMap, MessageEvent, UIListener, UIEvent } from './events';
 
 const DEFAULT_VIEWCOLUMN = vscode.ViewColumn.Two;
