@@ -7,8 +7,8 @@ into an interactive development surface: write code, generate PlantUML, preview 
 navigate back to real source files, and export production-ready artifacts.
 
 <p align="center">
-  <a href="https://marketplace.visualstudio.com/items?itemName=petercai.umlmark"><img src="https://img.shields.io/visual-studio-marketplace/v/petercai.umlmark?label=VS%20Code%20Marketplace" alt="VS Code Marketplace version for UMLMark"></a>
-  <a href="https://marketplace.visualstudio.com/items?itemName=petercai.umlmark"><img src="https://img.shields.io/visual-studio-marketplace/d/petercai.umlmark?label=downloads" alt="VS Code Marketplace downloads for UMLMark"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=petercai.umlmark"><img src="https://vsmarketplacebadges.dev/version-short/petercai.umlmark.svg" alt="VS Code Marketplace version for UMLMark"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=petercai.umlmark"><img src="https://vsmarketplacebadges.dev/downloads-short/petercai.umlmark.svg" alt="VS Code Marketplace downloads for UMLMark"></a>
   <a href="https://github.com/petercai/vscode-umlmark/stargazers"><img src="https://img.shields.io/github/stars/petercai/vscode-umlmark?style=social" alt="GitHub stars for vscode-umlmark"></a>
   <img src="https://img.shields.io/badge/license-dual--license-orange" alt="Dual license model badge">
 </p>
