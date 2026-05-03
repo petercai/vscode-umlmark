@@ -1,0 +1,68 @@
+name: CI VS Code Extension
+
+on:
+  pull_request:
+    branches:
+      - '**'
+  push:
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-vscode-extension-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality-gate:
+    name: Test and package smoke check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Resolve version-check baseline
+        run: |
+          set -euo pipefail
+
+          if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
+            BASE_REF="${{ github.event.pull_request.base.sha }}"
+          else
+            BASE_REF="HEAD~1"
+          fi
+
+          echo "UMLMARK_VERSION_CHECK_BASE_REF=${BASE_REF}" >> "${GITHUB_ENV}"
+          echo "Using UMLMARK_VERSION_CHECK_BASE_REF=${BASE_REF}"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Package smoke check
+        run: |
+          set -euo pipefail
+          npx @vscode/vsce package --out "umlmark-ci-smoke-${GITHUB_SHA}.vsix"
+
+      - name: List smoke artifact
+        run: ls -lh *.vsix
+
+      - name: Upload smoke artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vscode-extension-smoke-vsix
+          path: '*.vsix'
+          if-no-files-found: error
