@@ -89,7 +89,17 @@
         <i class="material-icons">error</i>
         <div id="errmsg">
             <p id="errtxt">${error}</p>
-            <img id="image-error" src="${imageError}" style="max-width: 100%;">
+            <div id="error-detail-box">
+                <div class="error-detail-header">
+                    <span>Error Details</span>
+                    <button id="btnCopyError" title="Copy error details to clipboard">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+                <pre id="error-detail">${errorDetail}</pre>
+            </div>
+            <!-- Hidden: src loaded for use as preview image when error occurs -->
+            <img id="image-error" src="${imageError}" style="display:none;">
         </div>
     </div>
     <div id="modal-help" class="modal">

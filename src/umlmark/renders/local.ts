@@ -127,7 +127,13 @@ class LocalRender implements IRender {
 
                         let pms = processWrapper(process, savePath2).then(
                             stdout => buffers.push(stdout),
-                            err => Promise.reject(<RenderError>{ error: localize(10, null, diagram.name, err.error), out: err.out })
+                            err => Promise.reject(<RenderError>{
+                                error: localize(10, null, diagram.name, err.error),
+                                out: err.out,
+                                // Preserve raw stderr and file path for structured error display
+                                rawError: err.error,
+                                filePath: diagram.path,
+                            })
                         );
                         return pms;
                     },

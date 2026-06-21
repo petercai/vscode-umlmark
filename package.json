@@ -3,7 +3,7 @@
   "displayName": "UMLMark",
   "description": "PlantUML support with smooth code visualization and navigation experience in Visual Studio Code.",
   "icon": "images/icon-trans.png",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "publisher": "petercai",
   "engines": {
     "vscode": "^1.57.0"
@@ -31,7 +31,8 @@
     "onCommand:umlmark.preview",
     "onCommand:umlmark.URLCurrent",
     "onCommand:umlmark.URLDocument",
-    "onCommand:umlmark.extractSource"
+    "onCommand:umlmark.extractSource",
+    "onCommand:umlmark.generateUmlDiagram"
   ],
   "main": "./out/src/extension",
   "contributes": {
@@ -104,6 +105,11 @@
         "command": "umlmark.extractSource",
         "title": "%umlmark.extractSource.title%",
         "category": "UMLMark"
+      },
+      {
+        "command": "umlmark.generateUmlDiagram",
+        "title": "%umlmark.generateUmlDiagram.title%",
+        "category": "UMLMark"
       }
     ],
     "menus": {
@@ -132,11 +138,21 @@
           "when": "editorLangId == plantuml",
           "command": "umlmark.URLDocument",
           "group": "UMLMark"
+        },
+        {
+          "when": "resourceExtname == '.yaml'",
+          "command": "umlmark.generateUmlDiagram",
+          "group": "UMLMark"
         }
       ],
       "explorer/context": [
         {
           "command": "umlmark.exportWorkspace",
+          "group": "UMLMark"
+        },
+        {
+          "when": "resourceExtname == '.yaml'",
+          "command": "umlmark.generateUmlDiagram",
           "group": "UMLMark"
         }
       ],
@@ -398,12 +414,13 @@
     "@types/mocha": "^9.1.1",
     "@types/node": "^16.0.0",
     "@types/vscode": "^1.57.0",
-    "js-yaml": "^3.13.1",
+    "@types/js-yaml": "^3.12.7",
     "markdown-it": "^13.0.1",
     "plist": "^3.0.2",
     "typescript": "^4.8.2"
   },
   "dependencies": {
+    "js-yaml": "^3.13.1",
     "linq-collections": "*",
     "vscode-nls": "^2.0.2"
   }

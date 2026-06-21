@@ -12,6 +12,16 @@ export interface RenderError {
      * Image of error description
      */
     out: Buffer;
+    /**
+     * Raw/unformatted error output (e.g. PlantUML stderr before localization),
+     * preserved for structured error detail display.
+     */
+    rawError?: string;
+    /**
+     * Source file path for the diagram that produced this error,
+     * included in user-facing error details.
+     */
+    filePath?: string;
 }
 
 export interface RenderTask {

@@ -194,7 +194,7 @@ npm run compile
 npx @vscode/vsce package
 
 # Install the .vsix file
-code --install-extension umlmark-1.0.5.vsix
+code --install-extension umlmark-1.0.6.vsix
 ```
 
 Issue tracker:

@@ -27,6 +27,7 @@ function getAssociatedDiagramMetadata() {
 function initializeActionBar() {
     const btnActivatePuml = document.getElementById("btnActivatePuml");
     const btnRefreshPreview = document.getElementById("btnRefreshPreview");
+    const btnCopyError = document.getElementById("btnCopyError");
 
     if (btnActivatePuml) {
         btnActivatePuml.addEventListener("click", () => {
@@ -50,6 +51,33 @@ function initializeActionBar() {
                 action: "refreshAssociatedPreview",
                 path: metadata.path,
                 index: metadata.index,
+            });
+        });
+    }
+
+    // Copy error details to clipboard for easy issue reporting
+    if (btnCopyError) {
+        btnCopyError.addEventListener("click", (e) => {
+            e.stopPropagation(); // prevent hover popup from closing
+            const errorDetail = document.getElementById("error-detail");
+            if (!errorDetail) return;
+            const text = errorDetail.innerText || errorDetail.textContent || "";
+            if (!text.trim()) return;
+            navigator.clipboard.writeText(text).then(() => {
+                const icon = btnCopyError.querySelector(".material-icons");
+                if (icon) {
+                    const orig = icon.textContent;
+                    icon.textContent = "check";
+                    setTimeout(() => { icon.textContent = orig; }, 2000);
+                }
+                btnCopyError.title = "Copied!";
+                setTimeout(() => { btnCopyError.title = "Copy error details to clipboard"; }, 2000);
+            }).catch(() => {
+                // Fallback: select text in the pre element for manual copy
+                const sel = window.getSelection();
+                const range = document.createRange();
+                range.selectNodeContents(errorDetail);
+                if (sel) { sel.removeAllRanges(); sel.addRange(range); }
             });
         });
     }
@@ -102,6 +130,14 @@ window.addEventListener("load", () => {
     let hasError = !!document.getElementById("errtxt").innerText.trim();
     if (!hasError)
         document.getElementById("error-warning").style.display = "none";
+
+    // Hide error-detail-box if there are no structured error details
+    const errorDetailBox = document.getElementById("error-detail-box");
+    const errorDetailEl = document.getElementById("error-detail");
+    if (errorDetailBox && (!errorDetailEl || !errorDetailEl.innerText.trim())) {
+        errorDetailBox.style.display = "none";
+    }
+
     if (!settings.showSpinner)
         document.getElementById("spinner-container").remove();
     else {

@@ -20,6 +20,7 @@ import { CommandExportWorkspace } from './commands/exportWorkspace';
 import { CommandURLCurrent } from './commands/urlCurrent';
 import { CommandURLDocument } from './commands/urlDocument';
 import { CommandExtractSource } from './commands/extractSource';
+import { CommandRunUmlGen } from './commands/runUmlGen';
 import { plantumlPlugin } from './markdown-it-plantuml/index';
 import { Diagnoser } from './providers/diagnoser';
 
@@ -43,6 +44,7 @@ export function activate(context: vscode.ExtensionContext) {
             new CommandURLCurrent(),
             new CommandURLDocument(),
             new CommandExtractSource(),
+            new CommandRunUmlGen(),
             new Formatter(),
             new Symbol(),
             new Completion(),

@@ -7,7 +7,7 @@ declare function setTimeout(handler: (...args: any[]) => void, timeout?: number)
 const fs = require('fs');
 const path = require('path');
 
-import { RenderTask } from '../umlmark/renders/interfaces'
+import { RenderTask, RenderError } from '../umlmark/renders/interfaces'
 import { Diagram } from '../umlmark/diagram/diagram';
 import { diagramsOf, currentDiagram } from '../umlmark/diagram/tools';
 import { config } from '../umlmark/config';
@@ -36,6 +36,7 @@ class Previewer extends vscode.Disposable {
     private images: string[] = [];
     private imageError: string = "";
     private error: string = "";
+    private errorDetail: string = "";
     private zoomUpperLimit: boolean = false;
 
     constructor() {
@@ -58,6 +59,7 @@ class Previewer extends vscode.Disposable {
         this.images = [];
         this.imageError = "";
         this.error = "";
+        this.errorDetail = "";
     }
 
     updateWebView(): string | undefined {
@@ -72,6 +74,7 @@ class Previewer extends vscode.Disposable {
             }, ""),
             imageError: "",
             error: "",
+            errorDetail: "",
             status: this.previewPageStatus,
             // nonce: Math.random().toString(36).substr(2),
             icon: "file:///" + path.join(extensionPath, "images", "icon-trans.png"),
@@ -91,7 +94,15 @@ class Previewer extends vscode.Disposable {
                 case previewStatus.default:
                 case previewStatus.error:
                     env.imageError = this.imageError;
-                    env.error = this.error.replace(/\n/g, "<br />");
+                    // Show only the first line as summary — the raw PlantUML output is
+                    // already shown in full inside #error-detail to avoid duplication.
+                    const summaryLine = (this.error || "").split('\n')[0] || this.error;
+                    env.error = summaryLine;
+                    // HTML-escape errorDetail for safe insertion into <pre>
+                    env.errorDetail = this.errorDetail
+                        .replace(/&/g, "&amp;")
+                        .replace(/</g, "&lt;")
+                        .replace(/>/g, "&gt;");
                     this._uiPreview.show("preview.html", env);
                     break;
                 case previewStatus.processing:
@@ -170,12 +181,75 @@ class Previewer extends vscode.Disposable {
                 this.status = previewStatus.error;
                 let err = parseError(error)[0];
                 this.error = err.error;
+                this.errorDetail = this.buildErrorDetail(err, diagram);
                 let b64 = err.out.toString('base64');
                 if (!(b64 || err.error)) return;
                 this.imageError = `data:image/svg+xml;base64,${b64}`
                 this.updateWebView();
             }
         );
+    }
+    /**
+     * Build a structured, copyable error detail string for display in the error panel.
+     * Handles two error origins:
+     *   1. PlantUML local render (rawError set): parses SEVERITY/LINE/MESSAGE format;
+     *      detects embedded Java stack traces from PlantUML internal errors.
+     *   2. Extension / network errors (rawError absent): detects JS stack traces and
+     *      labels the section header accordingly.
+     */
+    private buildErrorDetail(err: RenderError, diagram: Diagram): string {
+        const filePath = err.filePath || diagram.path || "(unsaved file)";
+        const diagramName = diagram.name || "(unnamed)";
+        const rawPlantumlError = err.rawError ?? "";   // PlantUML stderr (local render only)
+        const fullError = err.error ?? "";             // localized/full error string
+
+        const lines: string[] = [];
+        lines.push(`File:    ${filePath}`);
+        lines.push(`Diagram: ${diagramName}`);
+
+        if (rawPlantumlError) {
+            // --- PlantUML local render error ---
+            // Stderr format: SEVERITY\nLINE_NUM(0-based)\nMESSAGE[\nJava stack trace...]
+            const rawLines = rawPlantumlError.split(/\r?\n/);
+            const nonEmptyLines = rawLines.filter(l => l.trim());
+
+            if (
+                nonEmptyLines.length >= 3 &&
+                /^[A-Z_]+$/.test(nonEmptyLines[0]) &&
+                /^\d+$/.test(nonEmptyLines[1])
+            ) {
+                const lineNumZero = parseInt(nonEmptyLines[1], 10);
+                lines.push(`Line:    ${lineNumZero + 1}  (PlantUML reports line ${lineNumZero})`);
+                lines.push(`Type:    ${nonEmptyLines[0]}`);
+                // Remaining lines after severity+linenum form the human-readable message
+                const msgPart = nonEmptyLines.slice(2).join(" ");
+                if (msgPart) lines.push(`Message: ${msgPart}`);
+            }
+
+            // Detect embedded Java stack trace (PlantUML internal / unexpected errors)
+            const hasJavaStack = /^\s+at \S+\.\S+\(/m.test(rawPlantumlError);
+
+            lines.push("");
+            lines.push("=== PlantUML Error Output ===");
+            lines.push(rawPlantumlError);
+
+            if (hasJavaStack) {
+                lines.push("");
+                lines.push("(Java stack trace detected — copy all details above and attach when reporting)");
+            }
+        } else {
+            // --- Extension / network error (no PlantUML stderr available) ---
+            // err.error may be a JS TypeError stack trace or an HTTP error message.
+            const hasJsStack = /\n\s+at /.test(fullError);
+            lines.push("");
+            lines.push(hasJsStack
+                ? "=== Extension Error (Stack Trace) ==="
+                : "=== Error Details ==="
+            );
+            lines.push(fullError);
+        }
+
+        return lines.join("\n");
     }
     private killTasks() {
         if (!this.task) return;

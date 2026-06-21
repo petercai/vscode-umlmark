@@ -202,6 +202,71 @@ body:hover #ctrl-container {
     border: 1px solid red;
 }
 
+/* Error detail box (structured copyable text, shown inside hover popup) */
+#error-detail-box {
+    margin-top: 0.75em;
+}
+
+.error-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.2em 0.5em;
+    background: rgba(180, 0, 0, 0.4);
+    border: 1px solid rgba(255, 80, 80, 0.6);
+    border-bottom: none;
+    border-radius: 3px 3px 0 0;
+}
+
+.error-detail-header span {
+    color: #ffaaaa;
+    font-size: 0.78em;
+    font-weight: bold;
+    letter-spacing: 0.04em;
+}
+
+#btnCopyError {
+    background: transparent;
+    border: 1px solid rgba(200, 200, 200, 0.4);
+    border-radius: 3px;
+    color: #ccc;
+    cursor: pointer;
+    padding: 1px 5px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 0.72em;
+    line-height: 1.4;
+}
+
+#btnCopyError:hover {
+    border-color: #fff;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+#btnCopyError .material-icons {
+    font-size: 13px;
+    display: inline;
+    color: inherit;
+}
+
+#error-detail {
+    margin: 0;
+    padding: 0.5em 0.75em;
+    background: rgba(20, 0, 0, 0.6);
+    border: 1px solid rgba(255, 80, 80, 0.6);
+    border-radius: 0 0 3px 3px;
+    color: #ffcccc;
+    font-family: monospace;
+    font-size: 0.78em;
+    max-height: 180px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+    user-select: text;
+}
+
 #spinner-container {
     width: 90px;
     padding: 10px;
