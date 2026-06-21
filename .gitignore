@@ -3,3 +3,6 @@ node_modules
 *.jar
 *.tmLanguage
 *.vsix
+/.claude
+/.github
+/CLAUDE.md
