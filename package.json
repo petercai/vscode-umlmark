@@ -3,7 +3,7 @@
   "displayName": "UMLMark",
   "description": "PlantUML support with smooth code visualization and navigation experience in Visual Studio Code.",
   "icon": "images/icon-trans.png",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "publisher": "petercai",
   "engines": {
     "vscode": "^1.57.0"
@@ -414,6 +414,7 @@
     "@types/mocha": "^9.1.1",
     "@types/node": "^16.0.0",
     "@types/vscode": "^1.57.0",
+    "@types/js-yaml": "^3.12.7",
     "markdown-it": "^13.0.1",
     "plist": "^3.0.2",
     "typescript": "^4.8.2"

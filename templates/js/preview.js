@@ -166,18 +166,10 @@ window.addEventListener("load", () => {
         document.getElementById("image-container").remove();
     }
 
-    // see imageMapResizer.js
-    imageMapResize('#image-map');
-    let image = document.getElementById('image')
-    if (image) {
-        new MutationObserver(() => {
-                imageMapResize('#image-map');
-        })
-        .observe(
-            image,
-            {'attributes': true}
-        );
-    }
+    // Modern Chromium/Electron auto-scales image map coords with CSS-sized images per
+    // the HTML5 spec (coords are in natural-image-pixel space; browser translates).
+    // imageMapResizer.js was removed — it pre-scaled coords for old browsers and
+    // caused double-scaling (scale²) in modern VSCode webviews, producing wrong tooltips.
 });
 window.addEventListener(
     "resize",

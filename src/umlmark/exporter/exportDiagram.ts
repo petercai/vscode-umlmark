@@ -23,13 +23,10 @@ export function exportDiagram(diagram: Diagram, format: string, savePath: string
     }
     let renderTask = appliedRender(diagram.parentUri).render(diagram, format, savePath);
     if (!savePath) {
-        // when exporting to buffer include map to make links clickable
-        let mapTask = appliedRender(diagram.parentUri).getMapData(diagram, savePath);
-        // https://github.com/qjebbs/vscode-plantuml/issues/579
-        mapTask.promise = mapTask.promise.catch(e => {
-            return Promise.resolve([]);
-        })
-        return combine(renderTask, mapTask);
+        // For preview, the image map is built from the SVG's own <a> elements in the previewer.
+        // -pipemap outputs coordinates in PNG space which mismatches SVG natural dimensions,
+        // causing clicks to land on the wrong link. SVG-derived coords are always aligned.
+        return renderTask;
     }
 
     if (!config.exportMapFile(diagram.parentUri)) return renderTask;

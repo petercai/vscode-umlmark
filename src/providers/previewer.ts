@@ -16,6 +16,97 @@ import { parseError, calculateExportPath, addFileIndex, showMessagePanel, fileTo
 import { exportToBuffer } from "../umlmark/exporter/exportToBuffer";
 import { UI } from '../ui/ui';
 
+/**
+ * Build an HTML image map from <a> elements in a PlantUML SVG.
+ *
+ * Why SVG-derived instead of -pipemap:
+ *   -pipemap generates coordinates in PNG space, which mismatches SVG natural dimensions
+ *   causing clicks to land on wrong links. Worse, it merges ALL occurrences of the same
+ *   href into one giant rect spanning the full diagram height (e.g. coords y2=6336 for a
+ *   6904px tall SVG), so many links overlap and the wrong one always wins.
+ *
+ * PlantUML SVG uses two patterns inside <a>:
+ *   1. <a><rect fill="#..." .../></a>  — participant boxes; use rect's x/y/width/height.
+ *   2. <a><text x y textLength font-size>LABEL</text></a> — inline message label links;
+ *      derive bounding box from text position (y is the baseline in SVG coordinates).
+ */
+function buildImageMapFromSvg(svgContent: string): string {
+    const areas: string[] = [];
+    const aTagRegex = /<a\b([^>]*)>([\s\S]*?)<\/a>/g;
+    let aMatch: RegExpExecArray | null;
+    while ((aMatch = aTagRegex.exec(svgContent)) !== null) {
+        const attrString = aMatch[1];
+        const inner = aMatch[2];
+
+        // href= (SVG 2) or xlink:href= (SVG 1.1) — PlantUML emits both for compatibility
+        const hrefMatch = attrString.match(/(?:xlink:href|href)="([^"]*)"/);
+        if (!hrefMatch || !hrefMatch[1]) continue;
+        const href = hrefMatch[1];
+
+        // Default title from the <a> attribute (may be the full URL for 2-arg links)
+        let title = '';
+        const titleAttrMatch = attrString.match(/(?:xlink:title|title)="([^"]*)"/);
+        if (titleAttrMatch) title = titleAttrMatch[1];
+
+        let x1 = NaN, y1 = NaN, x2 = NaN, y2 = NaN;
+
+        // Pattern 1: participant boxes — <a><rect x y width height .../></a>
+        const rectTagMatch = inner.match(/<rect\b([^>]*)>/);
+        if (rectTagMatch) {
+            const ra = rectTagMatch[1];
+            const xm = ra.match(/\bx="([^"]*)"/);
+            const ym = ra.match(/\by="([^"]*)"/);
+            const wm = ra.match(/\bwidth="([^"]*)"/);
+            const hm = ra.match(/\bheight="([^"]*)"/);
+            if (xm && ym && wm && hm) {
+                const x = parseFloat(xm[1]);
+                const y = parseFloat(ym[1]);
+                const w = parseFloat(wm[1]);
+                const h = parseFloat(hm[1]);
+                if (!isNaN(x) && !isNaN(y) && !isNaN(w) && !isNaN(h)) {
+                    x1 = x; y1 = y; x2 = x + w; y2 = y + h;
+                }
+            }
+        }
+
+        // Pattern 2: inline text links — <a><text x y textLength font-size>LABEL</text></a>
+        // SVG <text> y is the BASELINE; compute bounding box above and below the baseline.
+        if (isNaN(x1)) {
+            const textTagMatch = inner.match(/<text\b([^>]*)>/);
+            if (textTagMatch) {
+                const ta = textTagMatch[1];
+                const xm = ta.match(/\bx="([^"]*)"/);
+                const ym = ta.match(/\by="([^"]*)"/);
+                const tlm = ta.match(/\btextLength="([^"]*)"/);
+                const fsm = ta.match(/\bfont-size="([^"]*)"/);
+                if (xm && ym) {
+                    const x = parseFloat(xm[1]);
+                    const y = parseFloat(ym[1]);          // baseline
+                    const textLen = tlm ? parseFloat(tlm[1]) : 80;
+                    const fontSize = fsm ? parseFloat(fsm[1]) : 12;
+                    if (!isNaN(x) && !isNaN(y)) {
+                        x1 = x;
+                        y1 = y - fontSize;                // cap height above baseline
+                        x2 = x + textLen;
+                        y2 = y + Math.ceil(fontSize * 0.3); // descender below baseline
+                        // Prefer the displayed label (text content) over full URL as tooltip
+                        const tc = inner.match(/<text\b[^>]*>([^<]*)<\/text>/);
+                        if (tc && tc[1].trim()) title = tc[1].trim();
+                    }
+                }
+            }
+        }
+
+        if (isNaN(x1)) continue;
+
+        const titleAttr = title ? ` title="${title}"` : '';
+        areas.push(
+            `<area shape="rect" coords="${Math.round(x1)},${Math.round(y1)},${Math.round(x2)},${Math.round(y2)}" href="${href}"${titleAttr}>`
+        );
+    }
+    return areas.length > 0 ? `<map>\n${areas.join('\n')}\n</map>` : '<map></map>';
+}
+
 enum previewStatus {
     default,
     error,
@@ -152,24 +243,23 @@ class Previewer extends vscode.Disposable {
 
                 this.error = "";
                 this.imageError = "";
+                // Build image list: for each SVG/PNG buffer immediately append its image map.
+                // SVG buffers get a map extracted from their own <a> elements (correct coord space).
+                // PNG buffers get an empty map (preview only uses SVG; PNG is a fallback thumbnail).
+                // -pipemap is no longer called (removed from exportDiagram preview path) because
+                // its coordinates are in PNG space and mismatch SVG natural dimensions.
                 this.images = result.reduce((p, buf) => {
-                    let sigPNG = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
-                    let isPNG = buf.slice(0, sigPNG.length).equals(sigPNG);
-                    let isSVG = (buf.slice(0, 256).indexOf('<svg') >= 0);
+                    const sigPNG = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
+                    const isPNG = buf.slice(0, sigPNG.length).equals(sigPNG);
+                    const isSVG = (buf.slice(0, 256).indexOf('<svg') >= 0);
 
                     if (isPNG || isSVG) {
-                        let b64 = buf.toString('base64');
+                        const b64 = buf.toString('base64');
                         if (!b64) return p;
-
-                        // push image
                         p.push(`data:image/${isPNG ? 'png' : "svg+xml"};base64,${b64}`);
-                    } else {
-                        // push image map
-                        let imageMap = '<map></map>';
-                        if (buf.toString().trim().length > 0)
-                            imageMap = buf.toString()
-
-                        p.push(imageMap);
+                        // Append image map immediately after its image so switcher.js
+                        // can pair them by index (both are collected by tag name, not position)
+                        p.push(isSVG ? buildImageMapFromSvg(buf.toString()) : '<map></map>');
                     }
                     return p;
                 }, <string[]>[]);

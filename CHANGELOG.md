@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog,
 and this project follows Semantic Versioning for published extension versions.
 
+## [1.0.7] - 2026-06-22
+
+### Fixed
+
+- **Hyperlink click and tooltip mismatch in SVG preview** — clicking a link in the preview
+  panel now opens the correct file and line, and the tooltip shows the correct target.
+
 ## [1.0.6] - 2026-06-21
 
 ### Added

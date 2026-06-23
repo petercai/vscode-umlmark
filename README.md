@@ -49,7 +49,7 @@ UMLMark addresses these problems directly:
 
 Preview interaction (zoom, pan, control bar actions):
 
-![Animated demo of UMLMark preview zoom and pan controls](images/previes.gif)
+![Animated demo of UMLMark preview zoom and pan controls](images/zoom_demo.gif)
 
 Code navigation from PlantUML hyperlinks:
 
@@ -194,7 +194,7 @@ npm run compile
 npx @vscode/vsce package
 
 # Install the .vsix file
-code --install-extension umlmark-1.0.6.vsix
+code --install-extension umlmark-1.0.7.vsix
 ```
 
 Issue tracker:
