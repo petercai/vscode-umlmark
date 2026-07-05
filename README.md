@@ -110,47 +110,69 @@ UMLMark supports two rendering modes:
 
 - Java runtime
 - Graphviz
+- plantuml.jar
 
-Quick install on macOS:
+#### Quick install on Windows:
+
+```
+@REM Chocolatey package manager
+choco install temurin
+choco install graphviz
+
+@REM Windows package manager (winget)
+winget install EclipseAdoptium.Temurin.21.JDK
+winget install Graphviz.Graphviz
+```
+
+#### Quick install on macOS:
 
 ```bash
 brew install --cask temurin
 brew install graphviz
 ```
 
+#### Download plantuml.jar from https://plantuml.com/download
+
 ### PlantUMLServer Render
 
-Use this mode when you want faster export/preview throughput and have a PlantUML
-server available.
+Use this mode when you don't want to install Java and Graphviz.
 
 Example settings:
 
 ```json
-"umlmark.server": "http://localhost:8080",
+"umlmark.server": "https://www.plantuml.com",
 "umlmark.render": "PlantUMLServer"
 ```
 
-Note: for large diagrams with includes, server `POST` support is recommended to avoid
-`414 URI Too Long` errors.
 
 ## Configuration Highlights
 
-Commonly used settings:
+Recommended VS Code configuration (`settings.json`):
 
-- `umlmark.render`
-- `umlmark.server`
-- `umlmark.previewAutoUpdate`
-- `umlmark.diagramsRoot`
-- `umlmark.exportOutDir`
-- `umlmark.exportFormat`
-- `umlmark.includepaths`
-
-Typical project layout:
-
-```json
-"umlmark.diagramsRoot": "uml/plantuml",
-"umlmark.exportOutDir": "uml"
+```jsonc
+{
+  "umlmark.jar": "c:\\app\\plantuml-1.2026.6.jar",
+  "umlmark.exportFormat": "png",
+  "umlmark.exportIncludeFolderHeirarchy": false,
+  "umlmark.exportOutDir": "uml",
+  "umlmark.exportSubFolder": false,
+  "umlmark.render": "Local"
+}
 ```
+
+| Setting | Purpose | Notes |
+| --- | --- | --- |
+| `umlmark.jar` | Path to an alternate `plantuml.jar`. | Leave blank to use the version bundled with the extension. Set this to pin a specific PlantUML release. |
+| `umlmark.exportFormat` | Default export format (`png`, `svg`, `pdf`, `eps`, ...). | Leave blank to be prompted for a format on every export. |
+| `umlmark.exportIncludeFolderHeirarchy` | Preserve the source folder structure under the root when exporting. | Set to `false` for a flat output layout, as shown above. |
+| `umlmark.exportOutDir` | Output directory for exported diagrams. | Path is relative to the workspace folder. |
+| `umlmark.exportSubFolder` | Export each diagram into a subfolder named after its host file. | Set to `false` to export all diagrams directly into `exportOutDir`. |
+| `umlmark.render` | Rendering engine used for preview and export. | `Local` requires Java + Graphviz (see [Local Render Requirements](#local-render-requirements)); `PlantUMLServer` renders remotely via `umlmark.server`. |
+| `umlmark.java` | Java executable location. | Defaults to `java` on `PATH`; override if Java isn't globally available. |
+| `umlmark.server` | PlantUML server URL. | Required when `umlmark.render` is `PlantUMLServer`, e.g. `https://www.plantuml.com`. |
+
+> Tip: `umlmark.java`, `umlmark.jar`, `umlmark.server`, `umlmark.includepaths`, `umlmark.commandArgs`, and `umlmark.jarArgs` are restricted in untrusted workspaces for security.
+
 
 ## Ecosystem: UMLMark Suite
 
@@ -158,9 +180,8 @@ Together, these tools support a full code-to-architecture workflow:
 
 | Tool | Role |
 | --- | --- |
-| [UML Gen (CLI)](https://github.com/petercai/uml-gen-java) | Generate class and sequence diagrams from source code |
+| [UML Gen (CLI)](https://github.com/petercai/uml-gen) | Generate class and sequence diagrams from source code |
 | [UMLMark (VS Code Extension)](https://github.com/petercai/vscode-umlmark) | Interactive PlantUML preview, code navigation, export |
-| [UMLMark (Eclipse Plugin)](https://github.com/petercai/UMLMark-release) | UML generation and usage inside Eclipse |
 
 ## License
 
