@@ -29,9 +29,19 @@ import { UI } from '../ui/ui';
  *   1. <a><rect fill="#..." .../></a>  — participant boxes; use rect's x/y/width/height.
  *   2. <a><text x y textLength font-size>LABEL</text></a> — inline message label links;
  *      derive bounding box from text position (y is the baseline in SVG coordinates).
+ *
+ * Class diagrams add a third overlap case: a class with its own link (e.g.
+ * `class Foo [[foo.py:17]] { ... }`) renders a Pattern-1 <rect> spanning the WHOLE
+ * class box, while each member/method link (e.g. `[[foo.py:841 bar(): None]]`) renders
+ * a Pattern-2 <text> link fully NESTED inside that box. Per the HTML image-map hit-test
+ * spec, the browser picks the first <area> in document order whose bounds contain the
+ * click — so without reordering, the enclosing class-box area (emitted first) always
+ * wins and every member link inside it navigates to the class's own line instead of its
+ * own. Areas are sorted ascending by bounding-box size below so the smallest (most
+ * specific, i.e. nested) area always wins over any larger area that encloses it.
  */
 function buildImageMapFromSvg(svgContent: string): string {
-    const areas: string[] = [];
+    const areas: { x1: number; y1: number; x2: number; y2: number; href: string; title: string }[] = [];
     const aTagRegex = /<a\b([^>]*)>([\s\S]*?)<\/a>/g;
     let aMatch: RegExpExecArray | null;
     while ((aMatch = aTagRegex.exec(svgContent)) !== null) {
@@ -99,12 +109,20 @@ function buildImageMapFromSvg(svgContent: string): string {
 
         if (isNaN(x1)) continue;
 
-        const titleAttr = title ? ` title="${title}"` : '';
-        areas.push(
-            `<area shape="rect" coords="${Math.round(x1)},${Math.round(y1)},${Math.round(x2)},${Math.round(y2)}" href="${href}"${titleAttr}>`
-        );
+        areas.push({ x1, y1, x2, y2, href, title });
     }
-    return areas.length > 0 ? `<map>\n${areas.join('\n')}\n</map>` : '<map></map>';
+    if (areas.length === 0) return '<map></map>';
+
+    // Smallest bounding box first, so a nested/specific link (e.g. a class method)
+    // is matched by the browser's hit-test before the larger area that encloses it
+    // (e.g. the class box itself). See the note on buildImageMapFromSvg above.
+    areas.sort((a, b) => (a.x2 - a.x1) * (a.y2 - a.y1) - (b.x2 - b.x1) * (b.y2 - b.y1));
+
+    const html = areas.map(a => {
+        const titleAttr = a.title ? ` title="${a.title}"` : '';
+        return `<area shape="rect" coords="${Math.round(a.x1)},${Math.round(a.y1)},${Math.round(a.x2)},${Math.round(a.y2)}" href="${a.href}"${titleAttr}>`;
+    });
+    return `<map>\n${html.join('\n')}\n</map>`;
 }
 
 enum previewStatus {

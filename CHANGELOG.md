@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog,
 and this project follows Semantic Versioning for published extension versions.
 
+## [1.0.8] - 2026-07-05
+
+### Changed
+
+- Fixed an issue where clicking in the preview on a function did not navigate to the correct line in the source code.
+
 ## [1.0.7] - 2026-06-22
 
 ### Fixed
