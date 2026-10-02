@@ -1,10 +1,11 @@
 # UMLMark for Visual Studio Code
 
-PlantUML authoring, preview, code navigation, and export in one tool.
+UMLMark turns source code into navigable class and sequence diagrams inside VS Code, so architecture stays reviewable even when AI writes code faster than teams can read it.
 
-UMLMark helps teams keep diagrams and source code aligned by turning PlantUML files
-into an interactive development surface: write code, generate PlantUML, preview instantly,
-navigate back to real source files, and export production-ready artifacts.
+UMLMark has two parts: UML Gen, which generates diagrams from source code, and
+this VS Code extension, which previews them live, links every element back to
+its source, and exports shareable artifacts. The two are being merged into a
+single product.
 
 <p align="center">
   <a href="https://marketplace.visualstudio.com/items?itemName=petercai.umlmark"><img src="https://vsmarketplacebadges.dev/version-short/petercai.umlmark.svg" alt="VS Code Marketplace version for UMLMark"></a>
@@ -15,18 +16,21 @@ navigate back to real source files, and export production-ready artifacts.
 
 ## Why UMLMark
 
-Most diagram workflows break in at least one place:
+With AI-assisted development, the bottleneck has moved from writing code to
+understanding it. Line-by-line review rarely reveals structural change: new
+dependencies, shifted responsibilities, or altered call paths. Typical diagram
+workflows fall short in three ways:
 
-- Diagram preview is disconnected from source code changes.
-- Navigation from diagram elements back to real code is slow or brittle.
-- Exporting shareable artifacts is repetitive and error-prone.
+- **Drift**: hand-maintained diagrams fall out of sync with the code they describe.
+- **Disconnection**: diagrams are static images with no path back to the implementing source.
+- **Friction**: rendering and exporting diagrams for reviews and documentation is manual and repetitive.
 
-UMLMark addresses these problems directly:
+UMLMark closes these gaps with a single code-to-diagram workflow:
 
-- Fast PlantUML preview with practical zoom and pan controls.
-- Source-code navigation from diagram hyperlinks inside VS Code.
-- One-tool export flow for workspace, document, and current diagram.
-- Flexible rendering via Local or PlantUML Server modes.
+- **Generated from source**: class and sequence diagrams are derived from the code, so they reflect what is actually built.
+- **Traceable**: every diagram element links back to its source location in VS Code.
+- **Live**: the preview updates as you edit, with zoom and pan for large diagrams.
+- **Shareable**: export the current diagram, a document, or the whole workspace in one step, rendered locally or through a PlantUML server.
 
 ## Key Capabilities
 
@@ -176,9 +180,9 @@ Recommended VS Code configuration (`settings.json`):
 
 ## Ecosystem: UMLMark Suite
 
-Together, these tools support a full code-to-architecture workflow:
+UMLMark currently ships as two components that are being merged into a single product:
 
-| Tool | Role |
+| Component | Role |
 | --- | --- |
 | [UML Gen (CLI)](https://github.com/petercai/uml-gen) | Generate class and sequence diagrams from source code |
 | [UMLMark (VS Code Extension)](https://github.com/petercai/vscode-umlmark) | Interactive PlantUML preview, code navigation, export |
