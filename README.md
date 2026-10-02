@@ -2,10 +2,10 @@
 
 UMLMark turns source code into navigable class and sequence diagrams inside VS Code, so architecture stays reviewable even when AI writes code faster than teams can read it.
 
-UMLMark has two parts: UML Gen, which generates diagrams from source code, and
-this VS Code extension, which previews them live, links every element back to
-its source, and exports shareable artifacts. The two are being merged into a
-single product.
+UMLMark makes VS Code a complete workspace for code-to-architecture review:
+
+- **Generate**: right-click a diagram config and choose **Generate UML Diagram** to produce class and sequence diagrams directly from your codebase.
+- **Explore**: preview diagrams live, click any element to jump to its source, and export shareable artifacts for reviews and documentation.
 
 <p align="center">
   <a href="https://marketplace.visualstudio.com/items?itemName=petercai.umlmark"><img src="https://vsmarketplacebadges.dev/version-short/petercai.umlmark.svg" alt="VS Code Marketplace version for UMLMark"></a>
@@ -34,6 +34,8 @@ UMLMark closes these gaps with a single code-to-diagram workflow:
 
 ## Key Capabilities
 
+- Generate class and sequence diagrams from source code via the
+  **Generate UML Diagram** context menu on a `.yaml` diagram config.
 - Open PlantUML preview with `Alt+D` (`Option+D` on macOS).
 - Auto-update preview while editing.
 - Zoom and pan controls for large diagrams.
@@ -94,14 +96,14 @@ code --install-extension petercai.umlmark
 Recommended end-to-end workflow for Design as Code / Architecture as Code:
 
 1. Write or update source code.
-2. Generate PlantUML diagrams from source using UML Gen (CLI).
+2. Right-click a `.yaml` diagram config and choose **Generate UML Diagram**.
 3. Open generated `.puml` diagrams in UMLMark preview.
 4. Navigate from diagram elements back to source files.
 5. Iterate: update source, regenerate diagrams, and re-verify in preview.
 
 Flow summary:
 
-`source code -> uml-gen generation -> .puml preview in UMLMark -> code navigation back -> iterate`
+`source code -> Generate UML Diagram -> .puml preview in UMLMark -> code navigation back -> iterate`
 
 ## Rendering Modes
 
@@ -180,12 +182,12 @@ Recommended VS Code configuration (`settings.json`):
 
 ## Ecosystem: UMLMark Suite
 
-UMLMark currently ships as two components that are being merged into a single product:
+Diagram generation is built into UMLMark for VS Code. The same generation engine is also available as a standalone CLI for scripting and CI:
 
 | Component | Role |
 | --- | --- |
 | [UML Gen (CLI)](https://github.com/petercai/uml-gen) | Generate class and sequence diagrams from source code |
-| [UMLMark (VS Code Extension)](https://github.com/petercai/vscode-umlmark) | Interactive PlantUML preview, code navigation, export |
+| [UMLMark for VS Code](https://github.com/petercai/vscode-umlmark) | Interactive PlantUML preview, code navigation, export |
 
 ## License
 
