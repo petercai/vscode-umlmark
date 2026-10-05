@@ -17,8 +17,8 @@
                 "--disable-extensions",
                 "c:\\workspace\\github\\uml\\Vision"
             ],
-            "outFiles": ["${workspaceFolder}/out/src/**/*.js"],
-            "preLaunchTask": "npm: watch"
+            "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+            "preLaunchTask": "watch"
         },
         {
             "name": "Run Extension (with other extensions)",
@@ -30,8 +30,8 @@
                 "--user-data-dir=${workspaceFolder}/.vscode/.dev-user-data",
                 "--extensions-dir=${workspaceFolder}/.vscode/.dev-extensions"
             ],
-            "outFiles": ["${workspaceFolder}/out/src/**/*.js"],
-            "preLaunchTask": "npm: watch"
+            "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+            "preLaunchTask": "watch"
         },
         {
             "name": "Launch Tests",
@@ -46,7 +46,7 @@
                 "--disable-extensions"
             ],
             "outFiles": ["${workspaceFolder}/out/test/**/*.js"],
-            "preLaunchTask": "npm: watch"
+            "preLaunchTask": "watch"
         }
     ]
 }

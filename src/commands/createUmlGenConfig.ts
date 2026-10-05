@@ -57,8 +57,12 @@ interface Invocation {
  * Q15 (a template-dir override setting) was closed as won't-do (Q22-A); this stays the only seam.
  */
 function resolveTemplateDir(): string {
+    // Resolve via the extension API, not __dirname: the bundled dist/extension.js has a different depth than the tsc output.
     const extensionPath = contextManager.context?.extensionPath
-        ?? path.resolve(__dirname, '..', '..', '..'); // out/src/commands → extension root
+        ?? vscode.extensions.getExtension(EXTENSION_ID)?.extensionPath;
+    if (!extensionPath) {
+        throw new Error(`Cannot resolve install path of extension ${EXTENSION_ID}`);
+    }
     return path.join(extensionPath, 'umlgen');
 }
 

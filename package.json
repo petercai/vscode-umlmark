@@ -36,7 +36,7 @@
     "onCommand:umlmark.createUmlGenClassConfig",
     "onCommand:umlmark.createUmlGenSequenceConfig"
   ],
-  "main": "./out/src/extension",
+  "main": "./dist/extension.js",
   "contributes": {
     "languages": [
       {
@@ -470,19 +470,23 @@
   ],
   "scripts": {
     "check:package-version-bump": "node ./scripts/check-package-version-bump.js",
-    "vscode:prepublish": "npm run check:package-version-bump && npm run buildsyntax && tsc -p ./",
+    "vscode:prepublish": "npm run check:package-version-bump && npm run buildsyntax && npm run typecheck && npm run bundle",
     "compile": "tsc -p ./",
+    "typecheck": "tsc --noEmit -p ./",
+    "bundle": "node ./scripts/esbuild.js --production",
     "test": "npm run test:markdown-render && npm run test:umlgen-config",
     "test:markdown-render": "npm run compile && node ./out/test/markdown-render.node.test.js",
     "test:umlgen-config": "npm run compile && node ./out/test/umlgen-config.node.test.js",
-    "watch": "tsc -watch -p ./",
+    "watch:tsc": "tsc -watch -p ./",
+    "watch:esbuild": "node ./scripts/esbuild.js --watch",
     "buildsyntax": "node ./scripts/build-syntax.js",
-    "clean:devhost": "node -e \"const fs=require('fs');['out','.vscode/.dev-user-data','.vscode/.dev-extensions'].forEach(p=>fs.rmSync(p,{recursive:true,force:true}));\""
+    "clean:devhost": "node -e \"const fs=require('fs');['out','dist','.vscode/.dev-user-data','.vscode/.dev-extensions'].forEach(p=>fs.rmSync(p,{recursive:true,force:true}));\""
   },
   "devDependencies": {
     "@types/mocha": "^9.1.1",
     "@types/node": "^16.0.0",
     "@types/vscode": "^1.57.0",
+    "esbuild": "^0.25.12",
     "markdown-it": "^13.0.1",
     "plist": "^3.0.2",
     "typescript": "^4.8.2"

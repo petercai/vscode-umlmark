@@ -72,9 +72,7 @@ export function compile(rules: RulesWriting, regVars: any): Rules {
         return compiled;
     }
     function compileRegExp(reg: RegExp): MultiRegExp2 {
-        let str = reg.source.replace(/\{\{(\w+)\}\}/g, "${regVars.$1}");
-        str = str.replace(/\\/g, "\\\\");
-        str = eval("`" + str + "`");
+        let str = reg.source.replace(/\{\{(\w+)\}\}/g, (_, name) => `${regVars[name]}`);
         let flags = "";
         flags += reg.ignoreCase ? "i" : "";
         flags += "g";

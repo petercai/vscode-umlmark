@@ -1,9 +1,24 @@
 .vscode/**
 .vscode-test/**
-out/test/**
-test/**
 src/**
+test/**
+out/**
+node_modules/**
+scripts/**
 **/*.map
+**/*.ts
 .gitignore
+.travis.yml
 tsconfig.json
 vsc-extension-quickstart.md
+*.vsix
+
+# CI configuration
+.github/**
+
+# syntax source; the generated plantuml.tmLanguage is shipped
+syntaxes/*.yaml-tmLanguage
+
+# README media is served from GitHub (vsce rewrites relative links); ship only the icon
+images/**
+!images/icon-trans.png
