@@ -28,5 +28,10 @@
 	"umlmark.configuration.java": "Java 可执行文件位置。",
 	"umlmark.configuration.includepaths": "指定源目录和 'diagramsRoot' 之外的包含路径。",
 	"umlmark.configuration.lintDiagramNoName": "提示图片未命名问题",
-	"umlmark.untrusted.description": "受信任工作区才能启用可能被滥用的工作区设置"
+	"umlmark.configuration.umlgen.sourcePath": "本地 [uml-gen](https://github.com/petercai/uml-gen-java) 源码目录。**Generate UML Diagram** 和 **Generate Now** 必需。开头的 `~` 会展开为用户主目录。",
+	"umlmark.configuration.umlgen.venvPath": "UMLGen 虚拟环境。留空则使用 `<sourcePath>/.venv`。Java 配置从该 venv 运行生成器；Python 配置在存在项目 `.venv`/`venv` 时使用项目环境。",
+	"umlmark.untrusted.description": "受信任工作区才能启用可能被滥用的工作区设置",
+	"umlmark.generateUmlDiagram.title": "生成 UML 图",
+	"umlmark.createUmlGenClassConfig.title": "创建 UMLGen 类图配置",
+	"umlmark.createUmlGenSequenceConfig.title": "创建 UMLGen 时序图配置"
 }

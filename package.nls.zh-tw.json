@@ -27,5 +27,10 @@
 	"umlmark.configuration.java": "Java executable location.",
 	"umlmark.configuration.includepaths": "Specifies the include paths besides source folder and the 'diagramsRoot'.",
 	"umlmark.configuration.lintDiagramNoName": "lint when diagram is unamed.",
-	"umlmark.untrusted.description": "Required for loading vulnerable workspace settings"
+	"umlmark.configuration.umlgen.sourcePath": "本機 [uml-gen](https://github.com/petercai/uml-gen-java) 原始碼目錄。**Generate UML Diagram** 與 **Generate Now** 必須設定。開頭的 `~` 會展開為使用者主目錄。",
+	"umlmark.configuration.umlgen.venvPath": "UMLGen 虛擬環境。留空則使用 `<sourcePath>/.venv`。Java 設定從此 venv 執行產生器；Python 設定在存在專案 `.venv`/`venv` 時使用專案環境。",
+	"umlmark.untrusted.description": "Required for loading vulnerable workspace settings",
+	"umlmark.generateUmlDiagram.title": "產生 UML 圖",
+	"umlmark.createUmlGenClassConfig.title": "建立 UMLGen 類別圖設定",
+	"umlmark.createUmlGenSequenceConfig.title": "建立 UMLGen 循序圖設定"
 }

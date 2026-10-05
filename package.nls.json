@@ -29,5 +29,9 @@
 	"umlmark.configuration.java": "Java executable location.",
 	"umlmark.configuration.includepaths": "Specifies the include paths besides source folder and the 'diagramsRoot'.",
 	"umlmark.configuration.lintDiagramNoName": "lint when diagram is unamed.",
-	"umlmark.untrusted.description": "Required for loading vulnerable workspace settings"
+	"umlmark.configuration.umlgen.sourcePath": "Path to your local [uml-gen](https://github.com/petercai/uml-gen-java) checkout. Required by **Generate UML Diagram** and **Generate Now**. A leading `~` expands to the home folder.",
+	"umlmark.configuration.umlgen.venvPath": "UMLGen virtual environment. Leave empty to use `<sourcePath>/.venv`. Java configs run the generator from this venv; Python configs use the project `.venv`/`venv` when present.",
+	"umlmark.untrusted.description": "Required for loading vulnerable workspace settings",
+	"umlmark.createUmlGenClassConfig.title": "Create UMLGen Class Config",
+	"umlmark.createUmlGenSequenceConfig.title": "Create UMLGen Sequence Config"
 }

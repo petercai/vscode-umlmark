@@ -5,7 +5,13 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 import { Command } from './common';
+import * as os from 'os';
+import { execFile } from 'child_process';
 import { outputPanel } from '../umlmark/common';
+import { isErr } from '../umlgen/configSpec';
+import {
+    buildTerminalCommand, EnvCheck, planGeneration, Platform, projectEnvCandidates, ShellKind, venvExecutable,
+} from '../umlgen/umlgenEnv';
 
 /** Partial structure of a UMLGen YAML config — only routing-relevant fields */
 interface UmlGenConfig {
@@ -139,6 +145,73 @@ function registerOutputWatcher(
 }
 
 // ---------------------------------------------------------------------------
+// UMLGen environment (C1 / Q23–Q27) — effects only; planning is in ../umlgen/umlgenEnv
+// ---------------------------------------------------------------------------
+
+const TERMINAL_NAME = 'UMLGen';
+const PLATFORM: Platform = process.platform === 'win32' ? 'win32' : 'posix';
+/** The UMLGen terminal is created with a known shell so quoting/chaining is deterministic */
+const SHELL: ShellKind = PLATFORM === 'win32' ? 'powershell' : 'posix';
+const OPEN_SETTINGS = 'Open Settings';
+
+/** Show an environment problem with a shortcut to the umlmark.umlgen settings */
+function warnEnvironment(message: string): void {
+    vscode.window.showWarningMessage(`UMLMark: ${message}`, OPEN_SETTINGS).then(choice => {
+        if (choice === OPEN_SETTINGS) {
+            vscode.commands.executeCommand('workbench.action.openSettings', 'umlmark.umlgen');
+        }
+    });
+}
+
+async function pathExists(p: string): Promise<boolean> {
+    try {
+        await fs.promises.access(p);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+/** First check whose path is missing; every check is logged (Q27) */
+async function firstFailedCheck(checks: readonly EnvCheck[]): Promise<EnvCheck | undefined> {
+    for (const check of checks) {
+        const ok = await pathExists(check.path);
+        outputPanel.appendLine(`[generateUmlDiagram] env check id=${check.id} ok=${ok} path=${check.path}`);
+        if (!ok) { return check; }
+    }
+    return undefined;
+}
+
+/** First project venv (.venv, venv) that contains a Python executable (Q25) */
+async function firstProjectEnv(workspaceRoot: string): Promise<string | undefined> {
+    for (const candidate of projectEnvCandidates(workspaceRoot)) {
+        if (await pathExists(venvExecutable(candidate, 'python', PLATFORM))) { return candidate; }
+    }
+    return undefined;
+}
+
+/** `uv` when it is on PATH, otherwise pip through the project Python (Q25) */
+function detectInstaller(): Promise<'uv' | 'pip'> {
+    return new Promise(resolve => {
+        execFile('uv', ['--version'], { timeout: 5000 }, err => resolve(err ? 'pip' : 'uv'));
+    });
+}
+
+/** Reuse the live "UMLGen" terminal, or create it with a known shell (Q26) */
+function umlGenTerminal(workspaceRoot: string): vscode.Terminal {
+    const existing = vscode.window.terminals.find(t => t.name === TERMINAL_NAME && t.exitStatus === undefined);
+    if (existing) {
+        outputPanel.appendLine(`[generateUmlDiagram] terminal reused`);
+        return existing;
+    }
+    const shellPath = PLATFORM === 'win32'
+        ? 'powershell.exe'
+        : (fs.existsSync('/bin/bash') ? '/bin/bash' : '/bin/sh');
+    outputPanel.appendLine(`[generateUmlDiagram] terminal created shell=${shellPath}`);
+    return vscode.window.createTerminal({ name: TERMINAL_NAME, cwd: workspaceRoot, shellPath });
+}
+
+// ---------------------------------------------------------------------------
 // Command implementation
 // ---------------------------------------------------------------------------
 
@@ -146,7 +219,8 @@ function registerOutputWatcher(
  * VS Code command: UMLMark: Generate UML Diagram
  *
  * Reads the active or right-clicked YAML config file, routes to the correct
- * UMLGen CLI tool, sends the command to the active terminal, and automatically
+ * UMLGen CLI tool, validates the UMLGen environment (C1), sends the command to the
+ * dedicated "UMLGen" terminal, and automatically
  * opens the generated .puml file when it appears on disk.
  */
 export class CommandRunUmlGen extends Command {
@@ -194,36 +268,56 @@ export class CommandRunUmlGen extends Command {
             return;
         }
 
-        // 5. Build the terminal command.
-        //    Path is workspace-relative with forward slashes; quoted to handle spaces.
-        const relConfigPath = toRelativePosixPath(fileUri, workspaceFolder);
-        const terminalCmd = `${cliCmd} --config "${relConfigPath}"`;
-        outputPanel.appendLine(`[generateUmlDiagram] dispatch: ${terminalCmd}`);
-
-        // 6. Register the output file watcher before sending to terminal
-        //    to prevent a race condition where a fast command completes before
-        //    the watcher is in place.
-        const outputPath = config.output?.path;
-        let watcherDisposable: vscode.Disposable | undefined;
-        if (outputPath) {
-            watcherDisposable = registerOutputWatcher(workspaceFolder, outputPath);
+        // 5. Plan the UMLGen environment (C1): settings → venv / project env → CLI path
+        const language = config.runtime?.language?.toLowerCase().trim() ?? '';
+        const workspaceRoot = workspaceFolder.uri.fsPath;
+        const projectEnv = language === 'python' ? await firstProjectEnv(workspaceRoot) : undefined;
+        const settings = vscode.workspace.getConfiguration('umlmark.umlgen', fileUri);
+        const planned = planGeneration({
+            settings: { sourcePath: settings.get<string>('sourcePath'), venvPath: settings.get<string>('venvPath') },
+            home: os.homedir(),
+            platform: PLATFORM,
+            language,
+            cliName: cliCmd,
+            projectEnv,
+        });
+        if (isErr(planned)) {
+            outputPanel.appendLine(`[generateUmlDiagram] env ${planned.error.code}`);
+            warnEnvironment(planned.error.message);
+            return;
         }
+        const plan = planned.value;
+        outputPanel.appendLine(
+            `[generateUmlDiagram] env source=${plan.sourcePath} venv=${plan.venvPath} ` +
+            `python-env=${plan.pythonEnv} cli=${plan.cliPath}`
+        );
 
-        // 7. Require an active terminal (preserves the user's venv activation)
-        const terminal = vscode.window.activeTerminal;
-        if (!terminal) {
-            watcherDisposable?.dispose();
-            vscode.window.showErrorMessage(
-                'UMLMark: No active terminal found. ' +
-                'Please open a terminal with the UMLGen virtual environment activated, then retry.'
-            );
+        // 6. Verify every required path before touching a terminal (Q27)
+        const failed = await firstFailedCheck(plan.checks);
+        if (failed) {
+            warnEnvironment(`UMLGen environment check failed — ${failed.label} not found: ${failed.path}`);
             return;
         }
 
-        // 8. Send the command to the terminal and notify the user
+        // 7. Build the command: cd workspace → (Python project env: install UMLGen) → generate
+        const installer = plan.installInto ? await detectInstaller() : 'uv';
+        const relConfigPath = toRelativePosixPath(fileUri, workspaceFolder);
+        const terminalCmd = buildTerminalCommand({ shell: SHELL, workspaceRoot, plan, configRelPath: relConfigPath, installer });
+        outputPanel.appendLine(`[generateUmlDiagram] dispatch installer=${plan.installInto ? installer : '-'}: ${terminalCmd}`);
+
+        // 8. Register the output file watcher before sending to terminal
+        //    to prevent a race condition where a fast command completes before
+        //    the watcher is in place.
+        const outputPath = config.output?.path;
+        if (outputPath) {
+            registerOutputWatcher(workspaceFolder, outputPath);
+        }
+
+        // 9. Send to the dedicated UMLGen terminal (Q26) and notify the user
+        const terminal = umlGenTerminal(workspaceRoot);
         terminal.show(); // reveal terminal so the user can see output
         terminal.sendText(terminalCmd);
         vscode.window.setStatusBarMessage('UMLMark: UMLGen command dispatched', 5000);
-        outputPanel.appendLine(`[generateUmlDiagram] command sent to terminal: ${terminalCmd}`);
+        outputPanel.appendLine(`[generateUmlDiagram] command sent to terminal "${TERMINAL_NAME}"`);
     }
 }

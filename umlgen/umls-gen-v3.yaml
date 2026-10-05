@@ -1,0 +1,153 @@
+# V3 template for sequence diagram generation.
+#
+# Design goals:
+# - Keep include/exclude simple and explicit.
+# - Provide room for async/reactive evidence capture in later iterations.
+# - Keep deterministic output and pinned parser/tool versions.
+
+version: 3
+
+diagram:
+  # class | sequence
+  type: sequence
+
+runtime:
+  # java | python | typescript | javascript
+  language: java
+
+  # tree-sitter | ast
+  # ast      — Python built-in ast module (default for Python)
+  # tree-sitter — enhanced parser generator tool and incremental parsing library (default for Java)
+  parser: tree-sitter
+
+  # strict=false by default per current decision.
+  strict: false
+
+  stable_sort:
+    enabled: true
+    strategy: by_name
+
+  parser_lock_file: uml/parsers.lock.yaml
+
+evidence:
+  # off | basic | full
+  # basic is default by decision.
+  mode: basic
+
+  # Attach source anchors to each sequence arrow for one-click code navigation.
+  # Keep these enabled to simplify troubleshooting.
+  include_caller: true
+  include_callee: true
+  include_source_line: true
+
+observability:
+  emit_summary: true
+
+output:
+  format: plantuml
+  path: uml/your-plantuml-file.puml
+
+# Cross-class call expansion depth.
+# Depth 1: only the direct calls from include methods.
+# Depth N: expand N levels of callee chains.
+depth: 5
+
+import:
+  - uml/filter-v3.yaml
+
+src_root: 
+  - src/main/java
+
+# Async/reactive call tracing.
+#
+# python section controls Python-specific async patterns:
+#   enable_async_await: trace `await` calls and annotate arrows with <<async>>.
+#   enable_task_scheduler: trace Celery delay()/apply_async() as async messages.
+async:
+  # Python async/await and task scheduling traces.
+  python:
+    enable_async_await: true
+    enable_task_scheduler: true
+
+  # Java Spring WebFlux reactive chain traces.
+  java:
+    enable_webflux_chain: true
+
+# Include rules — same rule grammar as for Python and Java
+#
+# FQDN format for sequence entry methods:
+#   Preferred (workspace-relative file path):
+#     "path/to/file.py:ClassName.method_name"
+#     "path/to/file.py:module_level_function"  (module-level function)
+#   Compatible (dotted import path):
+#     "pkg.module:ClassName.method_name"
+#   Short format:
+#     "ClassName:method_name"  (full scan across src_root)
+#
+# Methods listed here are treated as entry-points:
+#   - If none of the include methods is called by another included method,
+#     they are treated as Actor-driven entry points and a leading Actor participant
+#     is added automatically.
+#   - Multiple entry-point methods are invoked by the Actor in YAML order.
+
+include:
+  # class_name:method_name
+  - FeedRefreshTaskGiver:process 
+  # Preferred: workspace-relative file path
+  - src/umlgen/pyc_gen.py:main
+
+  # Short format: ClassName:method_name (full scan for ClassName across src_root)
+  # - HtmlCleaningEngine:clean
+
+  # Module-level function entry-point
+  # - syntrive/views.py:my_view_function
+
+  # Regex: match all methods named "process" on any class
+  # - ".*:process"
+exclude: []
+  # Path/glob-shaped entries (e.g. "**/generated/**") are applied BEFORE
+  # parsing (file discovery time). FQCN/short-name/regex entries are applied
+  # AFTER parsing (post-index). Directories always skipped regardless of
+  # this list: .venv, venv, env, __pycache__, .git, node_modules, .tox,
+  # site-packages, dist-packages, .eggs.
+
+# User-defined concrete type preference for call resolution.
+#
+# Purpose:
+# - This section guides method lookup when call-site qualifier type is abstract
+#   (interface/base class) and multiple concrete implementations exist.
+# - umls_gen picks the FIRST child path by YAML order for each parent.
+# - Resolution is chain-based and prefers the most concrete type (leaf).
+#
+# Rules:
+# - Keep each edge as direct extends/implements relation.
+# - Do not put unrelated branches in one chain.
+# - If a method/type is not covered here, umls_gen falls back to default lookup.
+#
+#
+# Python FQDN format for defined_hierarchy (workspace-relative file path preferred):
+#   preferred: path/to/file.py:ClassName
+#   compatible: module.path:ClassName
+#   child:  module.ConcreteClassName
+#
+# Example:
+# defined_hierarchy:
+#   - syntrive.core.interfaces.BaseEngine:
+#       - syntrive.adapters.htmlclean.engine.HtmlCleaningEngine
+defined_hierarchy: []
+
+# Tool-managed full hierarchy tree for all participant types.
+#
+# Ownership:
+# - This section is GENERATED and FULLY OVERWRITTEN by umls_gen on each run.
+# - Manual edits are ignored by design.
+#
+# Coverage:
+# - Includes extends/implements relationships for classes/interfaces that
+#   participate in current diagram call chain.
+# - Traversal expands to the whole connected hierarchy component (not one branch).
+available_type_hierarchy: []
+
+# Generated section (tool-owned). Keep empty in template.
+# Contains all matched classes (with file path + line) and called methods.
+matched: []

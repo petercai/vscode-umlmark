@@ -27,5 +27,8 @@
   "umlmark.configuration.java": "Localización del ejecutable de Java.",
   "umlmark.configuration.includepaths": "Especifica las rutas de búsqueda de archivos al margen del directorio del archivo renderizado y de la ruta 'diagramsRoot'.",
   "umlmark.configuration.lintDiagramNoName": "lint when diagram is unamed.",
-  "umlmark.untrusted.description": "Required for loading vulnerable workspace settings"
+  "umlmark.untrusted.description": "Required for loading vulnerable workspace settings",
+	"umlmark.generateUmlDiagram.title": "Generar diagrama UML",
+	"umlmark.createUmlGenClassConfig.title": "Crear configuración de clases de UMLGen",
+	"umlmark.createUmlGenSequenceConfig.title": "Crear configuración de secuencia de UMLGen"
 }

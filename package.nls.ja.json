@@ -27,5 +27,8 @@
 	"umlmark.configuration.java": "Java実行可能パス",
 	"umlmark.configuration.includepaths": "ソースディレクトリと'diagramsRoot'以外のインクルードパスを指定します",
 	"umlmark.configuration.lintDiagramNoName": "名なしのダイアグラムをlintします",
-	"umlmark.untrusted.description": "脆弱性のあるワークスペースの設定の読み込みに必要"
+	"umlmark.untrusted.description": "脆弱性のあるワークスペースの設定の読み込みに必要",
+	"umlmark.generateUmlDiagram.title": "UML 図を生成",
+	"umlmark.createUmlGenClassConfig.title": "UMLGen クラス構成を作成",
+	"umlmark.createUmlGenSequenceConfig.title": "UMLGen シーケンス構成を作成"
 }

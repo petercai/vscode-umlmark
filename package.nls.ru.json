@@ -28,5 +28,8 @@
 	"umlmark.configuration.java": "Путь к исполняемому файлу Java.",
 	"umlmark.configuration.includepaths": "Определяет пути для включения файлов в дополнение к корню рабочего пространства и 'diagramsRoot'.",
 	"umlmark.configuration.lintDiagramNoName": "Показывать предупреждение, когда диаграмме не присвоено имя.",
-	"umlmark.untrusted.description": "Необходимо для загрузки непроверенных рабочих пространств."
+	"umlmark.untrusted.description": "Необходимо для загрузки непроверенных рабочих пространств.",
+	"umlmark.generateUmlDiagram.title": "Сгенерировать UML-диаграмму",
+	"umlmark.createUmlGenClassConfig.title": "Создать конфигурацию классов UMLGen",
+	"umlmark.createUmlGenSequenceConfig.title": "Создать конфигурацию последовательности UMLGen"
 }

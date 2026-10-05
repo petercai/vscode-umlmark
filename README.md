@@ -4,6 +4,7 @@ UMLMark turns source code into navigable class and sequence diagrams inside VS C
 
 UMLMark makes VS Code a complete workspace for code-to-architecture review:
 
+- **Configure**: right-click a `.py`, `.java` or `.ts` file and choose **Create UMLGen Class Config** or **Create UMLGen Sequence Config** to get a ready-to-run diagram config in `uml/`.
 - **Generate**: right-click a diagram config and choose **Generate UML Diagram** to produce class and sequence diagrams directly from your codebase.
 - **Explore**: preview diagrams live, click any element to jump to its source, and export shareable artifacts for reviews and documentation.
 
@@ -34,6 +35,8 @@ UMLMark closes these gaps with a single code-to-diagram workflow:
 
 ## Key Capabilities
 
+- Create a UMLGen class or sequence config from selected source files via the
+  **Create UMLGen Class Config** / **Create UMLGen Sequence Config** context menus.
 - Generate class and sequence diagrams from source code via the
   **Generate UML Diagram** context menu on a `.yaml` diagram config.
 - Open PlantUML preview with `Alt+D` (`Option+D` on macOS).
@@ -95,15 +98,17 @@ code --install-extension petercai.umlmark
 
 Recommended end-to-end workflow for Design as Code / Architecture as Code:
 
-1. Write or update source code.
-2. Right-click a `.yaml` diagram config and choose **Generate UML Diagram**.
-3. Open generated `.puml` diagrams in UMLMark preview.
-4. Navigate from diagram elements back to source files.
-5. Iterate: update source, regenerate diagrams, and re-verify in preview.
+1. Once: clone [uml-gen](https://github.com/petercai/uml-gen-java), create its `.venv`, and set `umlmark.umlgen.sourcePath` (and `umlmark.umlgen.venvPath` if the venv lives elsewhere).
+2. Write or update source code.
+3. Right-click the source files and choose **Create UMLGen Class Config** or **Create UMLGen Sequence Config** (once per diagram). In the editor, the sequence command uses the method under the cursor as the entry point.
+4. Choose **Generate Now**, or right-click the `.yaml` diagram config and choose **Generate UML Diagram**. The command runs in a dedicated **UMLGen** terminal.
+5. Open generated `.puml` diagrams in UMLMark preview.
+6. Navigate from diagram elements back to source files.
+7. Iterate: update source, regenerate diagrams, and re-verify in preview.
 
 Flow summary:
 
-`source code -> Generate UML Diagram -> .puml preview in UMLMark -> code navigation back -> iterate`
+`source code -> Create UMLGen Config -> Generate UML Diagram -> .puml preview in UMLMark -> code navigation back -> iterate`
 
 ## Rendering Modes
 
@@ -176,8 +181,10 @@ Recommended VS Code configuration (`settings.json`):
 | `umlmark.render` | Rendering engine used for preview and export. | `Local` requires Java + Graphviz (see [Local Render Requirements](#local-render-requirements)); `PlantUMLServer` renders remotely via `umlmark.server`. |
 | `umlmark.java` | Java executable location. | Defaults to `java` on `PATH`; override if Java isn't globally available. |
 | `umlmark.server` | PlantUML server URL. | Required when `umlmark.render` is `PlantUMLServer`, e.g. `https://www.plantuml.com`. |
+| `umlmark.umlgen.sourcePath` | Local uml-gen checkout. | Required by **Generate UML Diagram** / **Generate Now**. `~` expands to the home folder. |
+| `umlmark.umlgen.venvPath` | UMLGen virtual environment. | Defaults to `<sourcePath>/.venv`. Java configs run the generator from it; Python configs install uml-gen into the project `.venv`/`venv` (via `uv`, else `pip`) and run it there, falling back to this venv. |
 
-> Tip: `umlmark.java`, `umlmark.jar`, `umlmark.server`, `umlmark.includepaths`, `umlmark.commandArgs`, and `umlmark.jarArgs` are restricted in untrusted workspaces for security.
+> Tip: `umlmark.java`, `umlmark.jar`, `umlmark.server`, `umlmark.includepaths`, `umlmark.commandArgs`, `umlmark.jarArgs`, `umlmark.umlgen.sourcePath`, and `umlmark.umlgen.venvPath` are restricted in untrusted workspaces for security.
 
 
 ## Ecosystem: UMLMark Suite
@@ -221,7 +228,7 @@ npm run compile
 npx @vscode/vsce package
 
 # Install the .vsix file
-code --install-extension umlmark-1.0.8.vsix
+code --install-extension umlmark-1.1.0.vsix
 ```
 
 Issue tracker:

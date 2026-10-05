@@ -3,7 +3,7 @@
   "displayName": "UMLMark",
   "description": "PlantUML support with smooth code visualization and navigation experience in Visual Studio Code.",
   "icon": "images/icon-trans.png",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "publisher": "petercai",
   "engines": {
     "vscode": "^1.57.0"
@@ -32,7 +32,9 @@
     "onCommand:umlmark.URLCurrent",
     "onCommand:umlmark.URLDocument",
     "onCommand:umlmark.extractSource",
-    "onCommand:umlmark.generateUmlDiagram"
+    "onCommand:umlmark.generateUmlDiagram",
+    "onCommand:umlmark.createUmlGenClassConfig",
+    "onCommand:umlmark.createUmlGenSequenceConfig"
   ],
   "main": "./out/src/extension",
   "contributes": {
@@ -110,6 +112,16 @@
         "command": "umlmark.generateUmlDiagram",
         "title": "%umlmark.generateUmlDiagram.title%",
         "category": "UMLMark"
+      },
+      {
+        "command": "umlmark.createUmlGenClassConfig",
+        "title": "%umlmark.createUmlGenClassConfig.title%",
+        "category": "UMLMark"
+      },
+      {
+        "command": "umlmark.createUmlGenSequenceConfig",
+        "title": "%umlmark.createUmlGenSequenceConfig.title%",
+        "category": "UMLMark"
       }
     ],
     "menus": {
@@ -143,17 +155,37 @@
           "when": "resourceExtname == '.yaml'",
           "command": "umlmark.generateUmlDiagram",
           "group": "UMLMark"
+        },
+        {
+          "when": "resourceExtname =~ /^\\.(py|java|ts)$/",
+          "command": "umlmark.createUmlGenClassConfig",
+          "group": "UMLMark@1"
+        },
+        {
+          "when": "resourceExtname =~ /^\\.(py|java|ts)$/",
+          "command": "umlmark.createUmlGenSequenceConfig",
+          "group": "UMLMark@2"
         }
       ],
       "explorer/context": [
         {
+          "when": "resourceExtname =~ /^\\.(py|java|ts)$/ && !explorerResourceIsFolder",
+          "command": "umlmark.createUmlGenClassConfig",
+          "group": "UMLMark@1"
+        },
+        {
+          "when": "resourceExtname =~ /^\\.(py|java|ts)$/ && !explorerResourceIsFolder",
+          "command": "umlmark.createUmlGenSequenceConfig",
+          "group": "UMLMark@2"
+        },
+        {
           "command": "umlmark.exportWorkspace",
-          "group": "UMLMark"
+          "group": "UMLMark@3"
         },
         {
           "when": "resourceExtname == '.yaml'",
           "command": "umlmark.generateUmlDiagram",
-          "group": "UMLMark"
+          "group": "UMLMark@4"
         }
       ],
       "editor/title": [
@@ -161,6 +193,28 @@
           "when": "editorLangId == plantuml",
           "command": "umlmark.preview",
           "group": "navigation"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "when": "resourceExtname =~ /^\\.(py|java|ts)$/",
+          "command": "umlmark.createUmlGenClassConfig",
+          "group": "UMLMark@1"
+        },
+        {
+          "when": "resourceExtname =~ /^\\.(py|java|ts)$/",
+          "command": "umlmark.createUmlGenSequenceConfig",
+          "group": "UMLMark@2"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "umlmark.createUmlGenClassConfig",
+          "when": "resourceExtname =~ /^\\.(py|java|ts)$/"
+        },
+        {
+          "command": "umlmark.createUmlGenSequenceConfig",
+          "when": "resourceExtname =~ /^\\.(py|java|ts)$/"
         }
       ]
     },
@@ -366,6 +420,18 @@
           "scope": "resource",
           "default": [],
           "description": "%umlmark.configuration.jarArgs%"
+        },
+        "umlmark.umlgen.sourcePath": {
+          "type": "string",
+          "scope": "machine-overridable",
+          "default": "",
+          "markdownDescription": "%umlmark.configuration.umlgen.sourcePath%"
+        },
+        "umlmark.umlgen.venvPath": {
+          "type": "string",
+          "scope": "machine-overridable",
+          "default": "",
+          "markdownDescription": "%umlmark.configuration.umlgen.venvPath%"
         }
       }
     },
@@ -393,7 +459,9 @@
         "umlmark.includepaths",
         "umlmark.server",
         "umlmark.commandArgs",
-        "umlmark.jarArgs"
+        "umlmark.jarArgs",
+        "umlmark.umlgen.sourcePath",
+        "umlmark.umlgen.venvPath"
       ]
     }
   },
@@ -404,8 +472,9 @@
     "check:package-version-bump": "node ./scripts/check-package-version-bump.js",
     "vscode:prepublish": "npm run check:package-version-bump && npm run buildsyntax && tsc -p ./",
     "compile": "tsc -p ./",
-    "test": "npm run test:markdown-render",
+    "test": "npm run test:markdown-render && npm run test:umlgen-config",
     "test:markdown-render": "npm run compile && node ./out/test/markdown-render.node.test.js",
+    "test:umlgen-config": "npm run compile && node ./out/test/umlgen-config.node.test.js",
     "watch": "tsc -watch -p ./",
     "buildsyntax": "node ./scripts/build-syntax.js",
     "clean:devhost": "node -e \"const fs=require('fs');['out','.vscode/.dev-user-data','.vscode/.dev-extensions'].forEach(p=>fs.rmSync(p,{recursive:true,force:true}));\""
@@ -421,6 +490,7 @@
   "dependencies": {
     "js-yaml": "^3.13.1",
     "linq-collections": "*",
-    "vscode-nls": "^2.0.2"
+    "vscode-nls": "^2.0.2",
+    "yaml": "^2.9.1"
   }
 }

@@ -27,5 +27,8 @@
 	"umlmark.configuration.java": "Sti til eksekverbar Java-program.",
 	"umlmark.configuration.includepaths": "Specifies the include paths besides source folder and the 'diagramsRoot'.",
 	"umlmark.configuration.lintDiagramNoName": "lint when diagram is unamed.",
-	"umlmark.untrusted.description": "Required for loading vulnerable workspace settings"
+	"umlmark.untrusted.description": "Required for loading vulnerable workspace settings",
+	"umlmark.generateUmlDiagram.title": "Generér UML-diagram",
+	"umlmark.createUmlGenClassConfig.title": "Opret UMLGen-klassekonfiguration",
+	"umlmark.createUmlGenSequenceConfig.title": "Opret UMLGen-sekvenskonfiguration"
 }

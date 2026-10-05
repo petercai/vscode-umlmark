@@ -27,5 +27,8 @@
 	"umlmark.configuration.java": "Emplacement de l'exécutable 'java'",
 	"umlmark.configuration.includepaths": "Spécifier les chemins inclus ['includepaths'] autres que le dossier source et le 'diagramsRoot'.",
 	"umlmark.configuration.lintDiagramNoName": "Message quand le diagramme n'a pas de nom (par l'analyseur statique ['lint']).",
-	"umlmark.untrusted.description": "Requis pour charger les paramètres d'espace de travail vulnérables."
+	"umlmark.untrusted.description": "Requis pour charger les paramètres d'espace de travail vulnérables.",
+	"umlmark.generateUmlDiagram.title": "Générer le diagramme UML",
+	"umlmark.createUmlGenClassConfig.title": "Créer une configuration de classes UMLGen",
+	"umlmark.createUmlGenSequenceConfig.title": "Créer une configuration de séquence UMLGen"
 }

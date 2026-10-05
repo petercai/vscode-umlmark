@@ -27,5 +27,8 @@
 	"umlmark.configuration.java": "Java 실행파일 위치.",
 	"umlmark.configuration.includepaths": "소스 폴더와 'diagramsRoot'외에 포함할 경로를 지정합니다.",
 	"umlmark.configuration.lintDiagramNoName": "lint when diagram is unamed.",
-	"umlmark.untrusted.description": "Required for loading vulnerable workspace settings"
+	"umlmark.untrusted.description": "Required for loading vulnerable workspace settings",
+	"umlmark.generateUmlDiagram.title": "UML 다이어그램 생성",
+	"umlmark.createUmlGenClassConfig.title": "UMLGen 클래스 구성 만들기",
+	"umlmark.createUmlGenSequenceConfig.title": "UMLGen 시퀀스 구성 만들기"
 }

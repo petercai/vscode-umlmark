@@ -1,0 +1,28 @@
+# Parser/runtime lock template for reproducible analysis results.
+#
+# Keep this file under version control and update only with explicit review.
+
+lock_version: 1
+generated_by: umlgen
+
+python:
+  version: "3.12"
+  packages:
+    # Tree-sitter Python bindings version.
+    tree_sitter: "0.22.3"
+
+    # Optional language packs if used by implementation.
+    tree_sitter_java: "0.21.0"
+    tree_sitter_javascript: "0.21.2"
+    tree_sitter_typescript: "0.21.2"
+
+java:
+  # For Java-based parser bridges (for example Spoon service) when enabled.
+  jdk: "21"
+  spoon_core: "11.1.1"
+
+node:
+  # For TS/JS parser bridge tools (for example ts-morph) when enabled.
+  node: "20.14.0"
+  ts_morph: "23.0.0"
+  typescript: "5.5.4"

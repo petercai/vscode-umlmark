@@ -1,0 +1,127 @@
+# V3 template for class diagram generation.
+#
+# Purpose:
+# - Keep config declarative and stable for long-term evolution.
+# - Add runtime/parser/observability/output controls while preserving v2 mental model.
+# - Use deterministic generation to keep diffs small across runs.
+
+version: 3
+
+diagram:
+  # class | sequence
+  type: class
+
+runtime:
+  # java | python | typescript | javascript
+  language: java
+
+  # tree-sitter | ast
+  # Notes:
+  # - java: prefer tree-sitter (or future spoon-bridge parser once implemented)
+  # - python: prefer ast
+  # - typescript/javascript: prefer tree-sitter (or future ts-morph-bridge parser once implemented)
+  parser: tree-sitter
+
+  # strict=false by default per current decision.
+  # false: ignore unmatched include rules and continue.
+  # true: fail generation when include rules resolve no targets.
+  strict: false
+
+  # Keep generated output deterministic.
+  stable_sort:
+    enabled: true
+    # by_name keeps output stable and readable for reviews.
+    strategy: by_name
+
+  # Pin parser/tool versions for reproducible analysis across machines and CI.
+  parser_lock_file: uml/parsers.lock.yaml
+
+evidence:
+  # off | basic | full
+  # basic: matched list + high-level counts + key trace anchors.
+  mode: basic
+
+observability:
+  # Emit summary counters (matched/excluded/expanded/unresolved).
+  emit_summary: true
+
+output:
+  # plantuml is current production format.
+  # mermaid is reserved for future output renderer.
+  format: plantuml
+
+  # Upsert behavior: create if not exists, overwrite content if exists.
+  path: uml/your-plantuml-file.puml
+
+# Depth for class expansion.
+# Rule (current agreed behavior):
+# - Member/dependency expansion follows this depth.
+# - Inheritance (extends/implements) expansion may be treated as always-on chain by engine policy.
+depth: 3
+
+# Shared include/exclude rules can be imported from external files.
+import:
+  - uml/filter-v3.yaml
+
+# class diagram visibility controls
+method_scope: public
+member_scope: public
+
+# Source root for the selected runtime language.
+# Supports multiple entries for monorepos or src-layout projects.
+# Paths are relative to the workspace root.
+#
+# Java layouts:
+#   Flat layout:   src_root: ["src/main/java"]
+# python layouts:
+#   src layout:    src_root: ["src"]
+# Common layouts:
+#   Flat layout:   src_root: ["."]
+#   App layout:    src_root: ["myapp"]
+#   Multiple:      src_root: ["src", "plugins"]
+src_root: 
+  - src/main/java
+
+# Python module display strategy in the class diagram.
+#
+# module_class — each .py file is rendered as a <<module>> UML class.
+#   - Classes inside the module are linked with containment (+--) arrows.
+#   - Module-level functions touched by depth (first level) appear as methods.
+#   - __init__.py uses the directory name as the module name.
+#   - Hyperlinks use workspace-relative paths: [[path/to/file.py:line]].
+# (class_only and package modes are deprecated; module_class is now the default.)
+module_display: module_class
+
+# Include rules — same rule grammar as Java umlc-gen-v3.yaml.
+#
+# FQDN rule interpretation priority (checked in order):
+#   1. Regex pattern (string containing regex metacharacters, e.g. ".*Service")
+#   2. Workspace-relative file path (preferred): "adapters/engine.py:MyClass"
+#      - VS Code native path copy format; vscode-umlmark hyperlink compatible.
+#   3. Dotted import path (compatible): "adapters.engine:MyClass"
+#      - Tool auto-converts to file path via src_root lookup.
+#   4. Short class name (triggers full src_root scan; warns on ambiguous matches)
+#
+# Separator ':' separates file/module identifier from class or function name.
+# If no ':' is present, the rule is treated as a class/module name or regex.
+include:
+  # class short name
+  - CategoryController
+  - src/umlgen/pyc_gen.py:main
+
+
+exclude:
+  # class short name
+  - DtoFactory
+  # regex pattern
+  - ".*Dto"
+  # glob file pattern relative to workspace — applied BEFORE parsing (file is
+  # never opened/parsed), same as the FQCN/regex entries above are applied
+  # AFTER parsing (post-index only, since they need the parsed type index).
+  - src/main/.../dto/**/*.java
+  # Directories always skipped regardless of this list (never legitimate
+  # project source): .venv, venv, env, __pycache__, .git, node_modules,
+  # .tox, site-packages, dist-packages, .eggs.
+
+# Generated section (tool-owned). Keep empty in template.
+matched: []

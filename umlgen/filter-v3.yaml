@@ -1,0 +1,33 @@
+# Shared include/exclude rule pack for V3 configs.
+#
+# This file is imported by umlc-gen-v3.yaml and umls-gen-v3.yaml.
+# Keep only common rules here to reduce duplication.
+
+include:
+  # Example: include all *Service classes by regex.
+  # NOTE: keep this commented out — importing this file with an active include rule
+  # will add ".*Service" as an extra entry point to every diagram that imports this
+  # filter, which is almost certainly not the intent.
+  # - ".*Service"
+
+exclude:
+  # Example: exclude generated code folder.
+  - .venv/**
+  - .git/**
+  - .github/**
+  - .claude/**
+  - .uv-cache/**  
+  - tmp/**
+  - build/**
+  - target/**
+  - docs/**
+  - doc/**
+  - tests/**
+
+  # Example: exclude DTOs globally.
+  - ".*Dto.*"
+
+  # Directories that are always skipped regardless of this list — because
+  # they are never legitimate project source — include: .venv, venv, env,
+  # __pycache__, .git, node_modules, .tox, site-packages, dist-packages,
+  # .eggs. You do not need to list these explicitly.

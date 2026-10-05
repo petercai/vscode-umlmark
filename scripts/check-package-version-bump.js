@@ -5,7 +5,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 const baseRef = process.env.UMLMARK_VERSION_CHECK_BASE_REF || 'HEAD~1';
-const initialVersion = process.env.UMLMARK_INITIAL_VERSION || '1.0.8';
+const initialVersion = process.env.UMLMARK_INITIAL_VERSION || '1.1.0';
 const packagePath = path.resolve(process.cwd(), 'package.json');
 
 function get(obj, pathArr) {
