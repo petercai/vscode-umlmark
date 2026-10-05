@@ -4,6 +4,5 @@ node_modules
 *.tmLanguage
 *.vsix
 /.claude
-/.github
 /CLAUDE.md
 .vscode/
