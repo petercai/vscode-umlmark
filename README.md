@@ -94,6 +94,50 @@ code --install-extension petercai.umlmark
 5. Export outputs from command palette via:
    `umlmark.exportCurrent`, `umlmark.exportDocument`.
 
+## Create UMLGen Configs
+
+A UMLGen config is a `.yaml` file that tells the generator which source files
+to read and which diagram to draw. Instead of writing one by hand, right-click
+your source code and let UMLMark create it.
+
+### From the editor
+
+Right-click inside a `.py`, `.java` or `.ts` file and choose
+**Create UMLGen Class Config** or **Create UMLGen Sequence Config**.
+
+![Screenshot of the editor context menu on engine.py showing Create UMLGen Class Config and Create UMLGen Sequence Config](images/umlgen_conf.png)
+
+- **Class config**: covers the whole file.
+- **Sequence config**: uses the method or function under the cursor as the
+  entry point, so place the cursor inside the method you want to trace first.
+  The config name includes the method, for example `engine-clean-seq.yaml`.
+
+### From the Explorer
+
+Select one or more source files in the Explorer, right-click, and choose the
+same commands. All selected files go into a single config.
+
+![Screenshot of the Explorer context menu with engine.py, rules.py and tasks.py selected, showing Create UMLGen Class Config and Create UMLGen Sequence Config](images/conf_from_folder.png)
+
+- The first selected file sets the language and the config name.
+- Folders, unsupported files, and files in another language or workspace
+  folder are skipped; a warning lists them and **Output › UMLMark** shows details.
+
+### What gets created
+
+- `uml/<name>-cls.yaml` or `uml/<name>-seq.yaml`, opened in the editor so you
+  can review it. The diagram is written to `uml/<name>-cls.puml` (or `-seq.puml`).
+- `uml/filter-v3.yaml` and `uml/parsers.lock.yaml` support files, copied once.
+- Existing files are never overwritten. Running the command again on the same
+  source opens the existing config. If the name belongs to a different source,
+  UMLMark adds the parent folder to the name, for example `adapters-engine-cls.yaml`.
+
+When the config is ready, choose **Generate Now** in the notification, or
+right-click the `.yaml` file and choose **Generate UML Diagram**.
+
+> TypeScript configs can be created today, but UMLGen does not generate
+> diagrams from TypeScript yet.
+
 ## Developer Flow (UMLMark Suite)
 
 Recommended end-to-end workflow for Design as Code / Architecture as Code:
@@ -115,7 +159,8 @@ Flow summary:
 UMLMark supports two rendering modes:
 
 - `Local` (default)
-- `PlantUMLServer`
+- `PlantUMLServer`: renders remotely via `umlmark.server`, no local Java or
+  Graphviz needed (see [Configuration Highlights](#configuration-highlights))
 
 ### Local Render Requirements
 
@@ -143,18 +188,6 @@ brew install graphviz
 ```
 
 #### Download plantuml.jar from https://plantuml.com/download
-
-### PlantUMLServer Render
-
-Use this mode when you don't want to install Java and Graphviz.
-
-Example settings:
-
-```json
-"umlmark.server": "https://www.plantuml.com",
-"umlmark.render": "PlantUMLServer"
-```
-
 
 ## Configuration Highlights
 
